@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Den1zz Panel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<video id="bgVideo" autoplay muted loop playsinline>
+  <source src="https://v1.pinimg.com/videos/iht/expMp4/00/21/a1/0021a1b6884477413647428a4f78cdcd_720w.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<div class="panel">
+
+  <header class="baslik">
+    <div class="logo">
+      <span class="nokta"></span>
+      DEN1ZZ
+    </div>
+    <div class="ust-sag">
+      <span class="durum"><span class="durum-nokta"></span>Çevrimiçi</span>
+      <span id="saat">--:--:--</span>
+    </div>
+  </header>
+
+  <div class="icerik">
+
+    <aside class="sol">
+      <div class="sayfa-sekmeleri">
+        <button class="sekme aktif" data-sayfa="1">OSINT</button>
+        <button class="sekme" data-sayfa="2">Araçlar</button>
+      </div>
+      <div class="arama-mini">
+        <input type="text" id="miniArama" placeholder="Araç ara...">
+      </div>
+      <ul class="tool-liste" id="toolListe"></ul>
+    </aside>
+
+    <main class="sag">
+      <div id="bosEkran" class="bos-ekran">
+        <div class="buyuk-ikon">🔍</div>
+        <h2>Bir araç seç</h2>
+        <p>Soldaki listeden bir araç seç ve değer gir. Tüm sorgular tarayıcıda direkt çalışır.</p>
+        <div class="ipuc"><kbd>Ctrl</kbd> + <kbd>K</kbd> ile hızlı ara</div>
+      </div>
+
+      <div id="aktifEkran" class="aktif-ekran">
+        <div class="baslik-satir">
+          <h1 id="aktifBaslik"><span class="ikon"></span><span id="aktifAd"></span></h1>
+          <span class="rozet" id="aktifKategori">OSINT</span>
+        </div>
+        <p class="aciklama" id="aktifAciklama"></p>
+
+        <div class="girdi-kutusu" id="girdiKutusu"></div>
+
+        <button class="calistir-btn" id="calistirBtn">Çalıştır</button>
+
+        <div class="sonuc-kutusu" id="sonucKutusu">
+          <div class="bos-sonuc">Sonuç bekleniyor...</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <footer class="alt-bar">
+    <span id="toolSayisi">0 araç yüklendi</span>
+    <span>Den1zz v9.2 • Web Edition</span>
+  </footer>
+
+</div>
+
+<script src="tools.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
