@@ -8,115 +8,165 @@
 </head>
 <body>
 
-<!-- ÜST HEADER -->
-<header class="ust">
-  <div class="ust-sol">
-    <img src="https://i.imgur.com/1YsyvqE.jpeg" alt="Den1zz" class="logo-img">
-    <span class="logo-yazi">DEN1ZZ</span>
-  </div>
-  <button class="hamburger" id="hamburger" aria-label="Menü">
-    <span></span><span></span><span></span>
-  </button>
-</header>
+<!-- ============ GİRİŞ EKRANI ============ -->
+<div class="giris-ekran" id="girisEkran">
+  <div class="giris-kutu">
+    <div class="giris-logo">
+      <img src="https://i.imgur.com/1YsyvqE.jpeg" alt="Den1zz">
+    </div>
+    <h1 class="giris-marka">DEN1ZZ</h1>
+    <p class="giris-alt" id="girisAlt">Hesabına giriş yap</p>
 
-<!-- BREADCRUMB -->
-<div class="breadcrumb">
-  <span>Ana Sayfa</span>
-  <span class="bc-ayrac">/</span>
-  <span class="bc-aktif">Ana Sayfa</span>
-</div>
+    <div class="giris-sekmeler">
+      <button class="giris-sekme aktif" data-mod="login">Giriş</button>
+      <button class="giris-sekme" data-mod="register">Kayıt</button>
+    </div>
 
-<!-- ÜST İKON SATIRI -->
-<div class="ust-ikon-satiri">
-  <div class="bakiye-gosterge">
-    <span class="bakiye-ikon">🎁</span>
-    <div>
-      <div class="bakiye-etiket">Toplam Bakiye</div>
-      <div class="bakiye-deger">0.00 TL</div>
+    <form class="giris-form" id="girisForm" autocomplete="off">
+      <div class="giris-alan" id="alanKullanici" style="display:none;">
+        <img src="assets/icons/at.png" class="giris-ikon" onerror="this.style.visibility='hidden'">
+        <input type="text" id="fKullanici" placeholder="Kullanıcı adı">
+      </div>
+
+      <div class="giris-alan">
+        <img src="assets/icons/mail.png" class="giris-ikon" onerror="this.style.visibility='hidden'">
+        <input type="email" id="fEmail" placeholder="E-posta" required>
+      </div>
+
+      <div class="giris-alan">
+        <img src="assets/icons/lock.png" class="giris-ikon" onerror="this.style.visibility='hidden'">
+        <input type="password" id="fSifre" placeholder="Şifre" required>
+        <button type="button" class="sifre-goz" id="sifreGoz">
+          <img src="assets/icons/eye.png" id="gozImg" onerror="this.style.visibility='hidden'">
+        </button>
+      </div>
+
+      <div class="giris-hata" id="girisHata"></div>
+
+      <button type="submit" class="giris-buton" id="girisButon">GİRİŞ YAP</button>
+    </form>
+
+    <div class="giris-alt-yazi">
+      <span id="altYazi">Hesabın yok mu?</span>
+      <a href="#" id="altLink">Kayıt ol</a>
     </div>
   </div>
-  <div class="kucuk-ikonlar">
-    <span>🛒</span>
-    <span>🎵</span>
-    <span>🔔</span>
-    <span>📊</span>
-  </div>
 </div>
 
-<!-- ANNOUNCEMENT BAR -->
-<div class="duyuru-bar">
-  <span class="duyuru-marka">Den1zz</span>
-  <span>HER ZAMAN BİR NUMARA</span>
-</div>
+<!-- ============ DASHBOARD ============ -->
+<div class="panel" id="panel" style="display:none;">
 
-<!-- BANNER (tek) -->
-<div class="banner-satiri">
-  <div class="banner">
-    <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Banner">
-  </div>
-</div>
+  <header class="ust">
+    <div class="ust-sol">
+      <img src="https://i.imgur.com/1YsyvqE.jpeg" alt="Den1zz" class="logo-img">
+      <span class="logo-yazi">DEN1ZZ</span>
+    </div>
+    <div class="ust-sag">
+      <span class="kullanici-ad" id="ustKullanici">@kullanıcı</span>
+      <button class="hamburger" id="hamburger" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-<!-- İSTATİSTİK KARTLARI -->
-<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#7c3aed,#a855f7);">
-  <div class="ist-baslik">Kayıtlı Kullanıcılar</div>
-  <div class="ist-deger" id="kayitliSayi">0 Kişi</div>
-  <div class="ist-bar"><div class="ist-dolgu" id="kayitliBar" style="width:0%"></div></div>
-</div>
-
-<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#1e40af,#3b82f6);">
-  <div class="ist-baslik">Sitede Aktif Kişiler</div>
-  <div class="ist-deger" id="aktifSayi">1 Kişi</div>
-  <div class="ist-bar"><div class="ist-dolgu" id="aktifBar" style="width:5%"></div></div>
-</div>
-
-<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#1e40af,#3b82f6);">
-  <div class="ist-baslik">Üyelik Türü</div>
-  <div class="ist-deger">Ücretsiz Üyelik ⚡</div>
-  <div class="ist-bar"><div class="ist-dolgu" style="width:100%"></div></div>
-</div>
-
-<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#7f1d1d,#dc2626);">
-  <div class="ist-baslik">Toplam Bakiye</div>
-  <div class="ist-deger">0.00 TL</div>
-  <div class="ist-bar"><div class="ist-dolgu" style="width:0%"></div></div>
-</div>
-
-<!-- AKTİVİTE -->
-<div class="bolum">
-  <div class="bolum-baslik">
-    <span>🔍 Den1zz İspiyoncusu</span>
-  </div>
-  <ul class="aktivite" id="aktiviteListe"></ul>
-</div>
-
-<!-- DUYURULAR -->
-<div class="bolum">
-  <div class="bolum-baslik">
-    <span>📢 Duyurular</span>
-  </div>
-  <ul class="duyuru-liste">
-    <li>
-      <div class="duyuru-ikon">⚡</div>
+  <div class="hos-geldin" id="hosGeldin">
+    <div class="hg-sol">
+      <div class="hg-avatar">D</div>
       <div>
-        <div class="duyuru-baslik">WEB ÇÖZÜMLERİ EKLENDİ</div>
-        <div class="duyuru-tarih">09.10.2026 08:00</div>
+        <div class="hg-merhaba" id="hgMerhaba">Merhaba, kullanıcı</div>
+        <div class="hg-alt">Bugün ne sorgulayacaksın?</div>
       </div>
-    </li>
-    <li>
-      <div class="duyuru-ikon">❤️</div>
+    </div>
+    <button class="cikis-btn" id="cikisBtn">Çıkış</button>
+  </div>
+
+  <div class="bakiye-satir">
+    <div class="bakiye-kart">
+      <img src="assets/icons/gift.png" class="bakiye-ikon-img" onerror="this.style.visibility='hidden'">
       <div>
-        <div class="duyuru-baslik">TAKİP EDİN!</div>
-        <div class="duyuru-tarih">09.10.2026 08:00</div>
+        <div class="bakiye-etiket">Toplam Bakiye</div>
+        <div class="bakiye-deger">0.00 TL</div>
       </div>
-    </li>
-    <li>
-      <div class="duyuru-ikon">🚀</div>
-      <div>
-        <div class="duyuru-baslik">YENİ ARAÇLAR YOLDA</div>
-        <div class="duyuru-tarih">09.10.2026 08:00</div>
-      </div>
-    </li>
-  </ul>
+    </div>
+    <div class="kucuk-ikonlar">
+      <img src="assets/icons/cart.png" onerror="this.style.visibility='hidden'">
+      <img src="assets/icons/music.png" onerror="this.style.visibility='hidden'">
+      <img src="assets/icons/bell.png" onerror="this.style.visibility='hidden'">
+      <img src="assets/icons/chart.png" onerror="this.style.visibility='hidden'">
+    </div>
+  </div>
+
+  <div class="serit-bar">
+    <span class="serit-vurgu">Den1zz</span>
+    <span>HER ZAMAN BİR NUMARA</span>
+  </div>
+
+  <div class="banner-alan">
+    <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Banner" onerror="this.parentElement.style.display='none'">
+  </div>
+
+  <div class="ist-grid">
+    <div class="ist-kucuk" data-renk="mor">
+      <div class="ik-baslik">Kayıtlı Üye</div>
+      <div class="ik-deger" id="kayitliSayi">0</div>
+      <div class="ik-bar"><span id="kayitliBar" style="width:0%"></span></div>
+    </div>
+    <div class="ist-kucuk" data-renk="mavi">
+      <div class="ik-baslik">Şu An Aktif</div>
+      <div class="ik-deger" id="aktifSayi">1</div>
+      <div class="ik-bar"><span id="aktifBar" style="width:5%"></span></div>
+    </div>
+    <div class="ist-kucuk" data-renk="yesil">
+      <div class="ik-baslik">Üyelik</div>
+      <div class="ik-deger">Ücretsiz</div>
+      <div class="ik-bar"><span style="width:100%"></span></div>
+    </div>
+    <div class="ist-kucuk" data-renk="kirmizi">
+      <div class="ik-baslik">Toplam Bakiye</div>
+      <div class="ik-deger">0.00 TL</div>
+      <div class="ik-bar"><span style="width:0%"></span></div>
+    </div>
+  </div>
+
+  <div class="blok">
+    <div class="blok-ust">
+      <img src="assets/icons/search.png" class="blok-ikon-img" onerror="this.style.visibility='hidden'">
+      <span>Canlı Akış</span>
+    </div>
+    <ul class="akis" id="akisListe"></ul>
+  </div>
+
+  <div class="blok">
+    <div class="blok-ust">
+      <img src="assets/icons/megaphone.png" class="blok-ikon-img" onerror="this.style.visibility='hidden'">
+      <span>Duyurular</span>
+    </div>
+    <ul class="duyuru-liste">
+      <li>
+        <img src="assets/icons/bolt.png" class="duyuru-ikon-img" onerror="this.style.visibility='hidden'">
+        <div>
+          <div class="duyuru-baslik">WEB ÇÖZÜMLERİ EKLENDİ</div>
+          <div class="duyuru-tarih">09.10.2026 08:00</div>
+        </div>
+      </li>
+      <li>
+        <img src="assets/icons/heart.png" class="duyuru-ikon-img" onerror="this.style.visibility='hidden'">
+        <div>
+          <div class="duyuru-baslik">TAKİP EDİN</div>
+          <div class="duyuru-tarih">09.10.2026 08:00</div>
+        </div>
+      </li>
+      <li>
+        <img src="assets/icons/rocket.png" class="duyuru-ikon-img" onerror="this.style.visibility='hidden'">
+        <div>
+          <div class="duyuru-baslik">YENİ ARAÇLAR YOLDA</div>
+          <div class="duyuru-tarih">09.10.2026 08:00</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="alt-yazi">Den1zz v9.3</div>
 </div>
 
 <!-- DRAWER -->
@@ -126,19 +176,15 @@
     <span class="drawer-logo">DEN1ZZ</span>
     <button class="drawer-kapat" id="drawerKapat">✕</button>
   </div>
-
   <div class="drawer-sekmeler">
     <button class="d-sekme aktif" data-sayfa="1">OSINT</button>
     <button class="d-sekme" data-sayfa="2">Araçlar</button>
   </div>
-
   <div class="drawer-arama">
     <input type="text" id="drawerArama" placeholder="Araç ara...">
   </div>
-
   <ul class="drawer-liste" id="drawerListe"></ul>
-
-  <div class="drawer-alt">Den1zz v9.2</div>
+  <div class="drawer-alt">Den1zz v9.3</div>
 </aside>
 
 <script src="tools.js"></script>
