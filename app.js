@@ -1,8 +1,6 @@
-// Den1zz v11 - Auth + XP + Admin + Profil + Ayrı Menüler
-// Her girişte mail+şifre istenir. Oturum kalıcı değil.
+// Den1zz v11.1 - Auth + XP + Admin + Profil + Kategorili Menü
 
 const ADMIN_EMAIL = 'gizlihesap40444@gmail.com';
-const ADMIN_KADI = 'Den1zz';
 
 const DB = {
   kul: 'den1zz_kullanicilar',
@@ -54,9 +52,7 @@ function xpEkle(email, miktar) {
   const yeniLevel = levelHesapla(k[email].xp).level;
   if (aktifKullanici && aktifKullanici.email === email) {
     xpGuncelleUI();
-    if (yeniLevel > eskiLevel) {
-      setTimeout(() => toast(`🎉 Seviye atladın! LVL ${yeniLevel}`, 'basari'), 300);
-    }
+    if (yeniLevel > eskiLevel) setTimeout(() => toast(`🎉 Seviye atladın! LVL ${yeniLevel}`, 'basari'), 300);
   }
   return yeniLevel > eskiLevel ? yeniLevel : null;
 }
@@ -68,7 +64,7 @@ function toast(mesaj, tip = 'bilgi') {
   el.style.cssText = `
     position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
     padding: .85rem 1.3rem; border-radius: 12px; z-index: 9999;
-    font-size: .85rem; font-weight: 700; animation: toastIn .3s ease;
+    font-size: .85rem; font-weight: 700;
     background: ${tip === 'basari' ? 'linear-gradient(135deg,#10b981,#047857)' :
                   tip === 'hata' ? 'linear-gradient(135deg,#ef4444,#991b1b)' :
                   'linear-gradient(135deg,#3b82f6,#1e40af)'};
@@ -131,10 +127,7 @@ document.getElementById('girisForm').onsubmit = async (e) => {
 
     buton.disabled = true; buton.textContent = 'KAYIT EDİLİYOR...';
     const sifreHash = await sha256(sifre);
-    k[email] = {
-      kadi, email, sifreHash, tarih: Date.now(),
-      xp: 0, vipBitis: null, bio: '', pp: null, banner: null,
-    };
+    k[email] = { kadi, email, sifreHash, tarih: Date.now(), xp: 0, vipBitis: null, bio: '', pp: null, banner: null };
     dbYaz(DB.kul, k);
     buton.disabled = false; buton.textContent = 'KAYIT OL';
     hata.style.color = '#22c55e';
@@ -163,10 +156,7 @@ function girisYap(email) {
   aktifKullanici = { email };
 
   const girisler = dbAl(DB.girisler, []);
-  girisler.unshift({
-    email, kadi: u.kadi, pp: u.pp,
-    rol: rolHesapla(u), zaman: Date.now(),
-  });
+  girisler.unshift({ email, kadi: u.kadi, pp: u.pp, rol: rolHesapla(u), zaman: Date.now() });
   dbYaz(DB.girisler, girisler.slice(0, 30));
 
   panelGoster();
@@ -194,13 +184,14 @@ function panelGoster() {
   const u = k[aktifKullanici.email];
   const rol = rolHesapla(u);
 
-  // Sidebar kullanıcı
+  // Sidebar
   document.getElementById('sbAvatar').textContent = u.pp ? '' : u.kadi[0].toUpperCase();
   if (u.pp) document.getElementById('sbAvatar').style.backgroundImage = `url(${u.pp})`;
   document.getElementById('sbKulIsim').textContent = u.kadi;
-  document.getElementById('sbKulRol').textContent = rolEtiket(rol);
+  document.getElementById('sbKulRol').textContent = 
+    rol === 'admin' ? 'Yönetici' : (rol === 'vip' ? 'VIP Üyelik' : 'Ücretsiz Üyelik');
 
-  // Mobil avatar
+  // Mobil
   document.getElementById('mobilAvatar').textContent = u.pp ? '' : u.kadi[0].toUpperCase();
   if (u.pp) document.getElementById('mobilAvatar').style.backgroundImage = `url(${u.pp})`;
 
@@ -212,7 +203,6 @@ function panelGoster() {
   rolEl.textContent = rolEtiket(rol);
   rolEl.dataset.rol = rol;
 
-  // Admin butonu
   document.getElementById('sbAdminBtn').style.display = rol === 'admin' ? 'flex' : 'none';
 
   xpGuncelleUI();
@@ -221,7 +211,6 @@ function panelGoster() {
   liderlikGuncelle();
   akisGuncelle();
   duyuruGuncelle();
-  aracGridGuncelle();
   adminKullanicilariListele();
 }
 
@@ -236,17 +225,15 @@ function xpGuncelleUI() {
   document.getElementById('statSeviye').textContent = `LVL ${level}`;
 }
 
-// ============ İSTATİSTİK ============
 function istatistikGuncelle() {
   const k = dbAl(DB.kul, {});
   document.getElementById('statKayitli').textContent = Object.keys(k).length;
   const oturumlar = dbAl(DB.girisler, []);
-  const besDkOnce = Date.now() - 5 * 60 * 1000;
-  const aktifler = new Set(oturumlar.filter(g => g.zaman > besDkOnce).map(g => g.email));
+  const besDk = Date.now() - 5 * 60 * 1000;
+  const aktifler = new Set(oturumlar.filter(g => g.zaman > besDk).map(g => g.email));
   document.getElementById('statAktif').textContent = Math.max(1, aktifler.size);
 }
 
-// ============ FEED ============
 function girisFeedGuncelle() {
   const ul = document.getElementById('girisFeed');
   if (!ul) return;
@@ -276,10 +263,7 @@ function akisGuncelle() {
   const ul = document.getElementById('akisListe');
   if (!ul) return;
   const sorgular = dbAl(DB.sorgular, []).slice(0, 15);
-  if (!sorgular.length) {
-    ul.innerHTML = '<li class="bos-mesaj">Henüz sorgu yapılmadı.</li>';
-    return;
-  }
+  if (!sorgular.length) { ul.innerHTML = '<li class="bos-mesaj">Henüz sorgu yapılmadı.</li>'; return; }
   ul.innerHTML = '';
   sorgular.forEach(s => {
     const li = document.createElement('li');
@@ -301,15 +285,11 @@ function sorguKaydet(arac, xp) {
   const k = dbAl(DB.kul, {});
   const u = k[aktifKullanici.email];
   const sorgular = dbAl(DB.sorgular, []);
-  sorgular.unshift({
-    email: aktifKullanici.email, kadi: u.kadi, pp: u.pp,
-    arac, xp, zaman: Date.now(),
-  });
+  sorgular.unshift({ email: aktifKullanici.email, kadi: u.kadi, pp: u.pp, arac, xp, zaman: Date.now() });
   dbYaz(DB.sorgular, sorgular.slice(0, 30));
   akisGuncelle();
 }
 
-// ============ LİDERLİK ============
 function liderlikGuncelle() {
   const ul = document.getElementById('liderlikTam');
   if (!ul) return;
@@ -332,15 +312,11 @@ function liderlikGuncelle() {
   });
 }
 
-// ============ DUYURU ============
 function duyuruGuncelle() {
   const ul = document.getElementById('duyuruListe');
   if (!ul) return;
   const duyurular = dbAl(DB.duyuru, []);
-  if (!duyurular.length) {
-    ul.innerHTML = '<li class="bos-mesaj">Henüz duyuru yok.</li>';
-    return;
-  }
+  if (!duyurular.length) { ul.innerHTML = '<li class="bos-mesaj">Henüz duyuru yok.</li>'; return; }
   ul.innerHTML = '';
   duyurular.forEach(d => {
     const li = document.createElement('li');
@@ -356,13 +332,8 @@ function duyuruGuncelle() {
   });
 }
 
-// ============ YARDIMCI ============
-function saatFormat(t) {
-  return new Date(t).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-}
-function tarihFormat(t) {
-  return new Date(t).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
+function saatFormat(t) { return new Date(t).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }); }
+function tarihFormat(t) { return new Date(t).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
 
 // ============ SIDEBAR ============
 const sidebar = document.getElementById('sidebar');
@@ -389,11 +360,32 @@ function kapatMobil() {
   }
 }
 
+// KATEGORİ AÇ/KAPA
+document.querySelectorAll('.sb-grup-ust').forEach(btn => {
+  btn.onclick = () => {
+    const grup = btn.closest('.sb-grup');
+    grup.classList.toggle('acik');
+  };
+});
+
+// ALT TOOL TIKLAMA
+document.querySelectorAll('.sb-alt-item').forEach(btn => {
+  btn.onclick = () => {
+    const toolId = btn.dataset.tool;
+    if (toolId && TOOLS[toolId]) {
+      toolAc(toolId);
+      kapatMobil();
+    }
+  };
+});
+
 // ============ SAYFA GEÇİŞİ ============
 document.querySelectorAll('.sb-item').forEach(btn => {
   btn.onclick = () => {
-    sayfaDegistir(btn.dataset.sayfa);
-    kapatMobil();
+    if (btn.dataset.sayfa) {
+      sayfaDegistir(btn.dataset.sayfa);
+      kapatMobil();
+    }
   };
 });
 
@@ -406,45 +398,13 @@ function sayfaDegistir(ad) {
     b.classList.toggle('aktif', b.dataset.sayfa === ad);
   });
 
-  // Profil sayfası güncelle
   if (ad === 'profil') profilSayfaGuncelle();
 }
-
-// ============ ARAÇLAR ============
-function aracGridGuncelle() {
-  const grid = document.getElementById('aracGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const q = (document.getElementById('aracArama')?.value || '').toLowerCase();
-
-  Object.entries(TOOLS)
-    .filter(([id, t]) => t.ad.toLowerCase().includes(q))
-    .forEach(([id, t]) => {
-      const div = document.createElement('div');
-      div.className = 'arac-kart';
-      if (t.backendGerekli) div.classList.add('backend-yok');
-      div.innerHTML = `
-        <div class="arac-kart-ust">
-          <div class="arac-kart-ikon">${t.ikon || '🔧'}</div>
-          <div class="arac-kart-ad">${t.ad}</div>
-        </div>
-        <div class="arac-kart-aciklama">${t.aciklama || ''}</div>
-        ${t.kategori ? `<span class="arac-kart-tag">${t.kategori}</span>` : ''}
-      `;
-      div.onclick = () => { if (!t.backendGerekli) toolAc(id); };
-      grid.appendChild(div);
-    });
-
-  if (!grid.children.length) {
-    grid.innerHTML = '<div class="bos-mesaj">Sonuç yok.</div>';
-  }
-}
-
-document.getElementById('aracArama')?.addEventListener('input', aracGridGuncelle);
 
 // ============ TOOL PANEL ============
 function toolAc(id) {
   const t = TOOLS[id];
+  if (!t) return;
   aktifTool = id;
 
   document.getElementById('tpBaslik').textContent = `${t.ikon || ''} ${t.ad}`;
@@ -508,7 +468,7 @@ function sonucGoster(s) {
   return html;
 }
 
-// ============ PROFİL GÖR (başkası) ============
+// ============ PROFİL GÖR ============
 function profilGoster(email) {
   const k = dbAl(DB.kul, {});
   const u = k[email];
@@ -571,14 +531,12 @@ function profilSayfaGuncelle() {
 
 document.getElementById('pkDuzenle').onclick = () => profilDuzenleAc();
 
-// ============ PROFİL DÜZENLE ============
 function profilDuzenleAc() {
   const k = dbAl(DB.kul, {});
   const u = k[aktifKullanici.email];
   if (!u) return;
 
-  secilenFoto = null;
-  secilenBanner = null;
+  secilenFoto = null; secilenBanner = null;
 
   const av = document.getElementById('peAvatar');
   av.textContent = u.pp ? '' : u.kadi[0].toUpperCase();
@@ -679,8 +637,7 @@ document.getElementById('vipVerBtn').onclick = () => {
   const u = Object.values(k).find(x => x.kadi.toLowerCase() === nick.toLowerCase());
   if (!u) { mesaj.style.color = '#f87171'; mesaj.textContent = 'Kullanıcı bulunamadı.'; return; }
 
-  const bitis = Date.now() + sure * 24 * 60 * 60 * 1000;
-  u.vipBitis = bitis;
+  u.vipBitis = Date.now() + sure * 24 * 60 * 60 * 1000;
   dbYaz(DB.kul, k);
   mesaj.style.color = '#22c55e';
   mesaj.textContent = `✓ ${u.kadi} → ${sure} gün VIP`;
@@ -744,7 +701,6 @@ window.addEventListener('storage', (e) => {
 // ============ BAŞLAT ============
 (function baslat() {
   modDegistir('login');
-  // Oturum kaydedilmez, her ziyarette giriş istenir
 })();
 
 setInterval(() => {
