@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Den1zz Panel</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<!-- ============ GİRİŞ EKRANI ============ -->
+<!-- GİRİŞ EKRANI -->
 <div class="giris-ekran" id="girisEkran">
   <div class="giris-kutu">
     <div class="giris-logo">
@@ -24,25 +25,24 @@
 
     <form class="giris-form" id="girisForm" autocomplete="off">
       <div class="giris-alan" id="alanKullanici" style="display:none;">
-        <img src="assets/icons/at.png" class="giris-ikon" onerror="this.style.visibility='hidden'">
+        <i class="fa-solid fa-at giris-ikon"></i>
         <input type="text" id="fKullanici" placeholder="Kullanıcı adı">
       </div>
 
       <div class="giris-alan">
-        <img src="assets/icons/mail.png" class="giris-ikon" onerror="this.style.visibility='hidden'">
+        <i class="fa-solid fa-envelope giris-ikon"></i>
         <input type="email" id="fEmail" placeholder="E-posta" required>
       </div>
 
       <div class="giris-alan">
-        <img src="assets/icons/lock.png" class="giris-ikon" onerror="this.style.visibility='hidden'">
+        <i class="fa-solid fa-lock giris-ikon"></i>
         <input type="password" id="fSifre" placeholder="Şifre" required>
         <button type="button" class="sifre-goz" id="sifreGoz">
-          <img src="assets/icons/eye.png" id="gozImg" onerror="this.style.visibility='hidden'">
+          <i class="fa-solid fa-eye" id="gozIkon"></i>
         </button>
       </div>
 
       <div class="giris-hata" id="girisHata"></div>
-
       <button type="submit" class="giris-buton" id="girisButon">GİRİŞ YAP</button>
     </form>
 
@@ -53,7 +53,7 @@
   </div>
 </div>
 
-<!-- ============ DASHBOARD ============ -->
+<!-- DASHBOARD -->
 <div class="panel" id="panel" style="display:none;">
 
   <header class="ust">
@@ -69,30 +69,30 @@
     </div>
   </header>
 
-  <div class="hos-geldin" id="hosGeldin">
+  <div class="hos-geldin">
     <div class="hg-sol">
-      <div class="hg-avatar">D</div>
+      <div class="hg-avatar" id="hgAvatar">D</div>
       <div>
         <div class="hg-merhaba" id="hgMerhaba">Merhaba, kullanıcı</div>
         <div class="hg-alt">Bugün ne sorgulayacaksın?</div>
       </div>
     </div>
-    <button class="cikis-btn" id="cikisBtn">Çıkış</button>
+    <button class="cikis-btn" id="cikisBtn"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</button>
   </div>
 
   <div class="bakiye-satir">
     <div class="bakiye-kart">
-      <img src="assets/icons/gift.png" class="bakiye-ikon-img" onerror="this.style.visibility='hidden'">
+      <div class="bakiye-ikon-kutu"><i class="fa-solid fa-gift"></i></div>
       <div>
         <div class="bakiye-etiket">Toplam Bakiye</div>
         <div class="bakiye-deger">0.00 TL</div>
       </div>
     </div>
     <div class="kucuk-ikonlar">
-      <img src="assets/icons/cart.png" onerror="this.style.visibility='hidden'">
-      <img src="assets/icons/music.png" onerror="this.style.visibility='hidden'">
-      <img src="assets/icons/bell.png" onerror="this.style.visibility='hidden'">
-      <img src="assets/icons/chart.png" onerror="this.style.visibility='hidden'">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <i class="fa-solid fa-music"></i>
+      <i class="fa-solid fa-bell"></i>
+      <i class="fa-solid fa-chart-line"></i>
     </div>
   </div>
 
@@ -102,27 +102,27 @@
   </div>
 
   <div class="banner-alan">
-    <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Banner" onerror="this.parentElement.style.display='none'">
+    <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Banner">
   </div>
 
   <div class="ist-grid">
-    <div class="ist-kucuk" data-renk="mor">
-      <div class="ik-baslik">Kayıtlı Üye</div>
+    <div class="ist-kucuk" data-renk="kirmizi">
+      <div class="ik-baslik"><i class="fa-solid fa-users"></i> Kayıtlı Üye</div>
       <div class="ik-deger" id="kayitliSayi">0</div>
       <div class="ik-bar"><span id="kayitliBar" style="width:0%"></span></div>
     </div>
-    <div class="ist-kucuk" data-renk="mavi">
-      <div class="ik-baslik">Şu An Aktif</div>
+    <div class="ist-kucuk" data-renk="turuncu">
+      <div class="ik-baslik"><i class="fa-solid fa-bolt"></i> Şu An Aktif</div>
       <div class="ik-deger" id="aktifSayi">1</div>
       <div class="ik-bar"><span id="aktifBar" style="width:5%"></span></div>
     </div>
     <div class="ist-kucuk" data-renk="yesil">
-      <div class="ik-baslik">Üyelik</div>
+      <div class="ik-baslik"><i class="fa-solid fa-star"></i> Üyelik</div>
       <div class="ik-deger">Ücretsiz</div>
       <div class="ik-bar"><span style="width:100%"></span></div>
     </div>
-    <div class="ist-kucuk" data-renk="kirmizi">
-      <div class="ik-baslik">Toplam Bakiye</div>
+    <div class="ist-kucuk" data-renk="altin">
+      <div class="ik-baslik"><i class="fa-solid fa-coins"></i> Toplam Bakiye</div>
       <div class="ik-deger">0.00 TL</div>
       <div class="ik-bar"><span style="width:0%"></span></div>
     </div>
@@ -130,7 +130,7 @@
 
   <div class="blok">
     <div class="blok-ust">
-      <img src="assets/icons/search.png" class="blok-ikon-img" onerror="this.style.visibility='hidden'">
+      <i class="fa-solid fa-magnifying-glass"></i>
       <span>Canlı Akış</span>
     </div>
     <ul class="akis" id="akisListe"></ul>
@@ -138,26 +138,26 @@
 
   <div class="blok">
     <div class="blok-ust">
-      <img src="assets/icons/megaphone.png" class="blok-ikon-img" onerror="this.style.visibility='hidden'">
+      <i class="fa-solid fa-bullhorn"></i>
       <span>Duyurular</span>
     </div>
     <ul class="duyuru-liste">
       <li>
-        <img src="assets/icons/bolt.png" class="duyuru-ikon-img" onerror="this.style.visibility='hidden'">
+        <i class="fa-solid fa-bolt duyuru-ikon"></i>
         <div>
           <div class="duyuru-baslik">WEB ÇÖZÜMLERİ EKLENDİ</div>
           <div class="duyuru-tarih">09.10.2026 08:00</div>
         </div>
       </li>
       <li>
-        <img src="assets/icons/heart.png" class="duyuru-ikon-img" onerror="this.style.visibility='hidden'">
+        <i class="fa-solid fa-heart duyuru-ikon"></i>
         <div>
           <div class="duyuru-baslik">TAKİP EDİN</div>
           <div class="duyuru-tarih">09.10.2026 08:00</div>
         </div>
       </li>
       <li>
-        <img src="assets/icons/rocket.png" class="duyuru-ikon-img" onerror="this.style.visibility='hidden'">
+        <i class="fa-solid fa-rocket duyuru-ikon"></i>
         <div>
           <div class="duyuru-baslik">YENİ ARAÇLAR YOLDA</div>
           <div class="duyuru-tarih">09.10.2026 08:00</div>
@@ -174,7 +174,7 @@
 <aside class="drawer" id="drawer">
   <div class="drawer-ust">
     <span class="drawer-logo">DEN1ZZ</span>
-    <button class="drawer-kapat" id="drawerKapat">✕</button>
+    <button class="drawer-kapat" id="drawerKapat"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="drawer-sekmeler">
     <button class="d-sekme aktif" data-sayfa="1">OSINT</button>
