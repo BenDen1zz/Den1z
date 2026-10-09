@@ -1,93 +1,172 @@
-// Den1zz - 80 Araç tanımı
+// Den1zz v11.1 - Araç tanımları
 
 const TOOLS = {
 
+  // ============ DISCORD & SOSYAL ============
   "discord_id": {
-    ad: "Discord ID Sorgu",
-    ikon: "🆔",
-    kategori: "OSINT",
-    sayfa: 1,
+    ad: "Discord ID Sorgu", ikon: "🆔", kategori: "Discord",
     aciklama: "Discord ID'nin oluşturulma zamanını ve profil linklerini gösterir.",
     girdiler: [{ ad: "uid", etiket: "Discord ID", tip: "text", placeholder: "123456789012345678" }],
     calistir: async (p) => {
       const uid = p.uid.trim();
       if (!/^\d+$/.test(uid)) return { hata: "Geçersiz ID" };
-      const DISCORD_EPOCH = 1420070400000n;
+      const EPOCH = 1420070400000n;
       const i = BigInt(uid);
-      const ts = Number((i >> 22n) + DISCORD_EPOCH);
-      const worker = Number((i & 0x3E0000n) >> 17n);
-      const process_ = Number((i & 0x1F000n) >> 12n);
-      const increment = Number(i & 0xFFFn);
+      const ts = Number((i >> 22n) + EPOCH);
       return {
         "ID": uid,
         "Oluşturma (UTC)": new Date(ts).toISOString(),
         "Oluşturma (TR)": new Date(ts).toLocaleString('tr-TR'),
-        "Worker": worker,
-        "Process": process_,
-        "Increment": increment,
+        "Worker": Number((i & 0x3E0000n) >> 17n),
+        "Process": Number((i & 0x1F000n) >> 12n),
+        "Increment": Number(i & 0xFFFn),
         "Profil": `https://discord.com/users/${uid}`,
-        "Avatar": `https://cdn.discordapp.com/avatars/${uid}/`,
-        "Banner": `https://cdn.discordapp.com/banners/${uid}/`,
       };
     },
   },
 
   "discord_username": {
-    ad: "Discord Username Bul",
-    ikon: "🎯",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Discord ve diğer platformlarda kullanıcı adı arar.",
+    ad: "Discord Username Bul", ikon: "🎯", kategori: "Discord",
+    aciklama: "Farklı platformlarda kullanıcı adı arar.",
     girdiler: [{ ad: "u", etiket: "Username", tip: "text", placeholder: "kullanici" }],
     calistir: async (p) => {
       const u = p.u.trim().replace(/^@/, '');
       if (!u) return { hata: "Boş" };
-      const sonuc = {};
+      const s = {};
       try {
         const r = await fetch("https://discord.com/api/v9/unique-username/username-attempt-unauthed", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: u })
         });
-        const d = await r.json();
-        sonuc["Discord"] = d.taken ? "ALINMIŞ" : "MÜSAİT";
-      } catch { sonuc["Discord"] = "sorgulanamadı"; }
-      try {
-        const r = await fetch(`https://api.github.com/users/${u}`);
-        sonuc["GitHub"] = r.status === 200 ? "BULUNDU" : "yok";
-      } catch { sonuc["GitHub"] = "hata"; }
-      try {
-        const r = await fetch(`https://www.reddit.com/user/${u}/about.json`);
-        sonuc["Reddit"] = r.status === 200 ? "BULUNDU" : "yok";
-      } catch { sonuc["Reddit"] = "hata"; }
-      return sonuc;
+        s["Discord"] = (await r.json()).taken ? "ALINMIŞ" : "MÜSAİT";
+      } catch { s["Discord"] = "hata"; }
+      try { s["GitHub"] = (await fetch(`https://api.github.com/users/${u}`)).status === 200 ? "BULUNDU" : "yok"; } catch { s["GitHub"] = "hata"; }
+      try { s["Reddit"] = (await fetch(`https://www.reddit.com/user/${u}/about.json`)).status === 200 ? "BULUNDU" : "yok"; } catch { s["Reddit"] = "hata"; }
+      return s;
     },
   },
 
+  "telegram": {
+    ad: "Telegram Kanal", ikon: "📢", kategori: "Discord",
+    aciklama: "Telegram kanal linkini oluşturur.",
+    girdiler: [{ ad: "u", etiket: "Kullanıcı", tip: "text", placeholder: "durov" }],
+    calistir: async (p) => {
+      const u = p.u.trim().replace(/^@/, '');
+      if (!u) return { hata: "Boş" };
+      return { "Kanal Linki": `https://t.me/${u}`, "Önizleme": `https://t.me/s/${u}` };
+    },
+  },
+
+  "github_user": {
+    ad: "GitHub Kullanıcı", ikon: "🐙", kategori: "Discord",
+    aciklama: "GitHub kullanıcı bilgilerini çeker.",
+    girdiler: [{ ad: "u", etiket: "Kullanıcı", tip: "text", placeholder: "torvalds" }],
+    calistir: async (p) => {
+      const u = p.u.trim();
+      if (!u) return { hata: "Boş" };
+      const r = await fetch(`https://api.github.com/users/${u}`);
+      if (r.status !== 200) return { hata: "Bulunamadı" };
+      const d = await r.json();
+      return { Ad: d.name, Bio: d.bio, Repo: d.public_repos, Takipçi: d.followers, Konum: d.location, Email: d.email, Blog: d.blog, Kayıt: d.created_at, Profil: d.html_url };
+    },
+  },
+
+  "reddit_user": {
+    ad: "Reddit Kullanıcı", ikon: "👽", kategori: "Discord",
+    aciklama: "Reddit kullanıcı istatistikleri.",
+    girdiler: [{ ad: "u", etiket: "Kullanıcı", tip: "text", placeholder: "spez" }],
+    calistir: async (p) => {
+      const u = p.u.trim();
+      if (!u) return { hata: "Boş" };
+      const r = await fetch(`https://www.reddit.com/user/${u}/about.json`);
+      if (r.status !== 200) return { hata: "Bulunamadı" };
+      const d = (await r.json()).data;
+      return { Kullanıcı: d.name, "Link Karma": d.link_karma, "Yorum Karma": d.comment_karma, Kayıt: new Date(d.created_utc * 1000).toLocaleString('tr-TR') };
+    },
+  },
+
+  "gravatar": {
+    ad: "Gravatar Kontrol", ikon: "👤", kategori: "Discord",
+    aciklama: "Email ile Gravatar profilini kontrol eder.",
+    girdiler: [{ ad: "e", etiket: "Email", tip: "text", placeholder: "ornek@mail.com" }],
+    calistir: async (p) => {
+      const e = p.e.trim().toLowerCase();
+      if (!e) return { hata: "Boş" };
+      const hash = md5(e);
+      const r = await fetch(`https://www.gravatar.com/avatar/${hash}?d=404`, { method: "HEAD" });
+      return { Email: e, "MD5 Hash": hash, Gravatar: r.status === 200 ? "VAR" : "yok", Profil: `https://www.gravatar.com/${hash}` };
+    },
+  },
+
+  // ============ EMAIL ============
+  "email_breach": {
+    ad: "Email Breach Check", ikon: "🛡️", kategori: "Email",
+    aciklama: "E-posta sızıntı kontrolü.",
+    girdiler: [{ ad: "e", etiket: "Email", tip: "text", placeholder: "ornek@mail.com" }],
+    calistir: async (p) => {
+      const e = p.e.trim();
+      if (!e.includes("@")) return { hata: "Geçersiz email" };
+      const out = { Email: e };
+      try {
+        const r = await fetch(`https://api.xposedornot.com/v1/check-email/${e}`);
+        if (r.ok) {
+          const d = await r.json();
+          const bs = d.breaches || [];
+          out["XposedOrNot"] = Array.isArray(bs) && bs.length ? `${bs.length} breach` : "Temiz";
+        }
+      } catch { out["XposedOrNot"] = "hata"; }
+      return out;
+    },
+  },
+
+  "email_val": {
+    ad: "Email Doğrula", ikon: "✉️", kategori: "Email",
+    aciklama: "Email formatını kontrol eder.",
+    girdiler: [{ ad: "e", etiket: "Email", tip: "text", placeholder: "ornek@mail.com" }],
+    calistir: async (p) => {
+      const e = p.e.trim();
+      const re = /^[\w.\-+]+@[\w\-]+\.[\w.\-]+$/;
+      return { Email: e, Durum: re.test(e) ? "GEÇERLİ" : "GEÇERSİZ" };
+    },
+  },
+
+  "email_gen": {
+    ad: "Rastgele Email", ikon: "📧", kategori: "Email",
+    aciklama: "Rastgele email üretir.",
+    girdiler: [
+      { ad: "d", etiket: "Domain", tip: "text", placeholder: "gmail.com", varsayilan: "gmail.com" },
+      { ad: "adet", etiket: "Adet", tip: "number", placeholder: "5", varsayilan: 5 },
+    ],
+    calistir: async (p) => {
+      const d = p.d || "gmail.com";
+      const n = parseInt(p.adet) || 5;
+      const arr = [];
+      for (let i = 0; i < n; i++) {
+        const u = Array.from(crypto.getRandomValues(new Uint8Array(10))).map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
+        arr.push(`${u}@${d}`);
+      }
+      return { Emailler: arr.join("\n") };
+    },
+  },
+
+  // ============ IP & AĞ ============
   "ip_sorgu": {
-    ad: "IP Sorgu",
-    ikon: "🌐",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "IP veya domain için konum, ISP ve zaman dilimi bilgisi.",
-    girdiler: [{ ad: "q", etiket: "IP / Domain", tip: "text", placeholder: "8.8.8.8 veya google.com" }],
+    ad: "IP Sorgu", ikon: "🌐", kategori: "Ağ",
+    aciklama: "IP veya domain için konum ve ISP bilgisi.",
+    girdiler: [{ ad: "q", etiket: "IP / Domain", tip: "text", placeholder: "8.8.8.8" }],
     calistir: async (p) => {
       const q = p.q.trim();
       if (!q) return { hata: "Boş" };
       const r = await fetch(`http://ip-api.com/json/${q}?lang=tr`);
       const d = await r.json();
       if (d.status !== "success") return { hata: d.message || "Başarısız" };
-      delete d.status;
-      delete d.query_type;
+      delete d.status; delete d.query_type;
       return d;
     },
   },
 
   "benim_ip": {
-    ad: "Benim IP'm",
-    ikon: "📍",
-    kategori: "OSINT",
-    sayfa: 1,
+    ad: "Benim IP'm", ikon: "📍", kategori: "Ağ",
     aciklama: "Kendi IP ve konum bilgilerini gösterir.",
     girdiler: [],
     calistir: async () => {
@@ -99,11 +178,8 @@ const TOOLS = {
   },
 
   "domain_geo": {
-    ad: "Domain Geo",
-    ikon: "🗺️",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Domain'in IP'sini ve konumunu bulur.",
+    ad: "Domain Geo", ikon: "🗺️", kategori: "Ağ",
+    aciklama: "Domain'in IP ve konum bilgisi.",
     girdiler: [{ ad: "d", etiket: "Domain", tip: "text", placeholder: "google.com" }],
     calistir: async (p) => {
       const d = p.d.trim();
@@ -117,10 +193,7 @@ const TOOLS = {
   },
 
   "mac_sorgu": {
-    ad: "MAC Adresi Sorgu",
-    ikon: "🔌",
-    kategori: "OSINT",
-    sayfa: 1,
+    ad: "MAC Adresi Sorgu", ikon: "🔌", kategori: "Ağ",
     aciklama: "MAC adresinin üreticisini bulur.",
     girdiler: [{ ad: "m", etiket: "MAC", tip: "text", placeholder: "00:1A:2B" }],
     calistir: async (p) => {
@@ -128,121 +201,13 @@ const TOOLS = {
       if (!m) return { hata: "Boş" };
       const r = await fetch(`https://api.macvendors.com/${m}`);
       if (!r.ok) return { hata: "Bulunamadı" };
-      const t = await r.text();
-      return { MAC: m, "Üretici": t };
-    },
-  },
-
-  "email_breach": {
-    ad: "Email Breach Check",
-    ikon: "🛡️",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "E-posta adresinin sızmış olup olmadığını kontrol eder.",
-    girdiler: [{ ad: "e", etiket: "Email", tip: "text", placeholder: "ornek@mail.com" }],
-    calistir: async (p) => {
-      const e = p.e.trim();
-      if (!e.includes("@")) return { hata: "Geçersiz email" };
-      const out = { Email: e };
-      try {
-        const r = await fetch(`https://api.xposedornot.com/v1/check-email/${e}`);
-        if (r.ok) {
-          const d = await r.json();
-          const bs = d.breaches || [];
-          out["XposedOrNot"] = Array.isArray(bs) && bs.length ? `${bs.length} breach` : "Temiz";
-          if (Array.isArray(bs) && bs.length) out["Sızıntılar"] = bs.join(", ");
-        }
-      } catch { out["XposedOrNot"] = "hata"; }
-      return out;
-    },
-  },
-
-  "email_val": {
-    ad: "Email Doğrula",
-    ikon: "✉️",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Email formatını kontrol eder.",
-    girdiler: [{ ad: "e", etiket: "Email", tip: "text", placeholder: "ornek@mail.com" }],
-    calistir: async (p) => {
-      const e = p.e.trim();
-      const re = /^[\w.\-+]+@[\w\-]+\.[\w.\-]+$/;
-      return { Email: e, Durum: re.test(e) ? "GEÇERLİ" : "GEÇERSİZ" };
-    },
-  },
-
-  "gravatar": {
-    ad: "Gravatar Kontrol",
-    ikon: "👤",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Email ile Gravatar profilini kontrol eder.",
-    girdiler: [{ ad: "e", etiket: "Email", tip: "text", placeholder: "ornek@mail.com" }],
-    calistir: async (p) => {
-      const e = p.e.trim().toLowerCase();
-      if (!e) return { hata: "Boş" };
-      const hash = md5(e);
-      const url = `https://www.gravatar.com/avatar/${hash}?d=404`;
-      const r = await fetch(url, { method: "HEAD" });
-      return {
-        Email: e,
-        "MD5 Hash": hash,
-        "Gravatar": r.status === 200 ? "VAR" : "yok",
-        "Profil": `https://www.gravatar.com/${hash}`,
-      };
-    },
-  },
-
-  "github_user": {
-    ad: "GitHub Kullanıcı",
-    ikon: "🐙",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "GitHub kullanıcı bilgilerini çeker.",
-    girdiler: [{ ad: "u", etiket: "Kullanıcı", tip: "text", placeholder: "torvalds" }],
-    calistir: async (p) => {
-      const u = p.u.trim();
-      if (!u) return { hata: "Boş" };
-      const r = await fetch(`https://api.github.com/users/${u}`);
-      if (r.status !== 200) return { hata: "Bulunamadı" };
-      const d = await r.json();
-      return {
-        Ad: d.name, Bio: d.bio, Repo: d.public_repos,
-        Takipçi: d.followers, Konum: d.location,
-        Email: d.email, Blog: d.blog, Kayıt: d.created_at,
-        Profil: d.html_url,
-      };
-    },
-  },
-
-  "reddit_user": {
-    ad: "Reddit Kullanıcı",
-    ikon: "👽",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Reddit kullanıcı istatistikleri.",
-    girdiler: [{ ad: "u", etiket: "Kullanıcı", tip: "text", placeholder: "spez" }],
-    calistir: async (p) => {
-      const u = p.u.trim();
-      if (!u) return { hata: "Boş" };
-      const r = await fetch(`https://www.reddit.com/user/${u}/about.json`);
-      if (r.status !== 200) return { hata: "Bulunamadı" };
-      const d = (await r.json()).data;
-      return {
-        Kullanıcı: d.name,
-        "Link Karma": d.link_karma,
-        "Yorum Karma": d.comment_karma,
-        Kayıt: new Date(d.created_utc * 1000).toLocaleString('tr-TR'),
-      };
+      return { MAC: m, Üretici: await r.text() };
     },
   },
 
   "dns_google": {
-    ad: "DNS Sorgu (Google)",
-    ikon: "🔍",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Google DNS üzerinden A, AAAA, MX, TXT, NS kayıtlarını çeker.",
+    ad: "DNS Sorgu", ikon: "🔍", kategori: "Ağ",
+    aciklama: "A, AAAA, MX, TXT, NS kayıtları.",
     girdiler: [{ ad: "d", etiket: "Domain", tip: "text", placeholder: "google.com" }],
     calistir: async (p) => {
       const d = p.d.trim();
@@ -252,8 +217,8 @@ const TOOLS = {
         try {
           const r = await fetch(`https://dns.google/resolve?name=${d}&type=${t}`);
           const j = await r.json();
-          const cevaplar = (j.Answer || []).map(a => a.data);
-          if (cevaplar.length) out[t] = cevaplar.join(" | ");
+          const c = (j.Answer || []).map(a => a.data);
+          if (c.length) out[t] = c.join(" | ");
         } catch {}
       }
       return out;
@@ -261,28 +226,37 @@ const TOOLS = {
   },
 
   "ipv6_sorgu": {
-    ad: "IPv6 Sorgu",
-    ikon: "🌍",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Domain'in AAAA kayıtlarını getirir.",
+    ad: "IPv6 Sorgu", ikon: "🌍", kategori: "Ağ",
+    aciklama: "Domain'in AAAA kayıtları.",
     girdiler: [{ ad: "d", etiket: "Domain", tip: "text", placeholder: "google.com" }],
     calistir: async (p) => {
       const d = p.d.trim();
       if (!d) return { hata: "Boş" };
       const r = await fetch(`https://dns.google/resolve?name=${d}&type=AAAA`);
       const j = await r.json();
-      const cevaplar = (j.Answer || []).map(a => a.data);
-      return { Domain: d, "IPv6": cevaplar.length ? cevaplar.join("\n") : "Yok" };
+      const c = (j.Answer || []).map(a => a.data);
+      return { Domain: d, IPv6: c.length ? c.join("\n") : "Yok" };
+    },
+  },
+
+  // ============ WEB & GÜVENLİK ============
+  "cve": {
+    ad: "CVE Arama", ikon: "🛠️", kategori: "Web",
+    aciklama: "NVD üzerinden CVE araması.",
+    girdiler: [{ ad: "q", etiket: "Kelime", tip: "text", placeholder: "apache" }],
+    calistir: async (p) => {
+      const q = p.q.trim();
+      if (!q) return { hata: "Boş" };
+      const r = await fetch(`https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(q)}&resultsPerPage=10`);
+      const d = await r.json();
+      const list = (d.vulnerabilities || []).map(v => v.cve.id).join("\n");
+      return { Bulunan: (d.vulnerabilities || []).length, "CVE'ler": list || "Yok" };
     },
   },
 
   "wayback": {
-    ad: "Wayback Machine",
-    ikon: "🕰️",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Arşivlenmiş site snapshot'ını bulur.",
+    ad: "Wayback Machine", ikon: "🕰️", kategori: "Web",
+    aciklama: "Arşivlenmiş site snapshot'ı.",
     girdiler: [{ ad: "u", etiket: "URL", tip: "text", placeholder: "example.com" }],
     calistir: async (p) => {
       const u = p.u.trim();
@@ -291,67 +265,23 @@ const TOOLS = {
       const d = await r.json();
       const s = d.archived_snapshots?.closest;
       if (!s) return { hata: "Snapshot yok" };
-      return {
-        "Zaman": s.timestamp,
-        "URL": s.url,
-        "Durum": s.status,
-      };
+      return { Zaman: s.timestamp, URL: s.url, Durum: s.status };
     },
   },
 
-  "cve": {
-    ad: "CVE Arama",
-    ikon: "🛠️",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "NVD üzerinden CVE araması yapar.",
-    girdiler: [{ ad: "q", etiket: "Kelime", tip: "text", placeholder: "apache" }],
-    calistir: async (p) => {
-      const q = p.q.trim();
-      if (!q) return { hata: "Boş" };
-      const r = await fetch(`https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(q)}&resultsPerPage=10`);
-      const d = await r.json();
-      const list = (d.vulnerabilities || []).map(v => v.cve.id).join("\n");
-      return { "Bulunan": (d.vulnerabilities || []).length, "CVE'ler": list || "Yok" };
-    },
-  },
-
-  "telegram": {
-    ad: "Telegram Kanal",
-    ikon: "📢",
-    kategori: "OSINT",
-    sayfa: 1,
-    aciklama: "Telegram kanal bilgilerini çeker.",
-    girdiler: [{ ad: "u", etiket: "Kullanıcı (@)", tip: "text", placeholder: "durov" }],
-    calistir: async (p) => {
-      const u = p.u.trim().replace(/^@/, '');
-      return {
-        "Kanal Linki": `https://t.me/${u}`,
-        "Önizleme": `https://t.me/s/${u}`,
-      };
-    },
-  },
-
+  // ============ ARAÇLAR ============
   "hash": {
-    ad: "Hash / Base64 / URL",
-    ikon: "#️⃣",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "Metni MD5, SHA-1, SHA-256, Base64 ve URL encode eder.",
+    ad: "Hash / Base64 / URL", ikon: "#️⃣", kategori: "Araç",
+    aciklama: "Metni MD5, SHA, Base64, URL encode eder.",
     girdiler: [{ ad: "t", etiket: "Metin", tip: "textarea", placeholder: "metin" }],
     calistir: async (p) => {
       const t = p.t;
       const enc = new TextEncoder().encode(t);
-      const buf2hex = b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
-      const md5_h = md5(t);
-      const sha1 = buf2hex(await crypto.subtle.digest("SHA-1", enc));
-      const sha256 = buf2hex(await crypto.subtle.digest("SHA-256", enc));
-      const sha512 = buf2hex(await crypto.subtle.digest("SHA-512", enc));
+      const b2h = b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
       return {
-        MD5: md5_h,
-        "SHA-1": sha1,
-        "SHA-256": sha256,
-        "SHA-512": sha512,
+        MD5: md5(t),
+        "SHA-1": b2h(await crypto.subtle.digest("SHA-1", enc)),
+        "SHA-256": b2h(await crypto.subtle.digest("SHA-256", enc)),
         Base64: btoa(unescape(encodeURIComponent(t))),
         "URL Enc": encodeURIComponent(t),
       };
@@ -359,24 +289,31 @@ const TOOLS = {
   },
 
   "b64decode": {
-    ad: "Base64 Çöz",
-    ikon: "🔓",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Base64 Çöz", ikon: "🔓", kategori: "Araç",
     aciklama: "Base64 kodlu metni çözer.",
     girdiler: [{ ad: "t", etiket: "Base64", tip: "textarea", placeholder: "aGVsbG8=" }],
     calistir: async (p) => {
+      try { return { Sonuç: decodeURIComponent(escape(atob(p.t.trim()))) }; }
+      catch { return { hata: "Geçersiz Base64" }; }
+    },
+  },
+
+  "jwt_decode": {
+    ad: "JWT Decoder", ikon: "🎫", kategori: "Araç",
+    aciklama: "JWT token'ın header ve payload kısmını çözer.",
+    girdiler: [{ ad: "j", etiket: "JWT", tip: "textarea", placeholder: "eyJ..." }],
+    calistir: async (p) => {
+      const parts = p.j.trim().split(".");
+      if (parts.length < 2) return { hata: "Geçersiz JWT" };
       try {
-        return { Sonuç: decodeURIComponent(escape(atob(p.t.trim()))) };
-      } catch (e) { return { hata: "Geçersiz Base64" }; }
+        const dec = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
+        return { Header: JSON.stringify(dec(parts[0]), null, 2), Payload: JSON.stringify(dec(parts[1]), null, 2) };
+      } catch (e) { return { hata: "Çözülemedi: " + e.message }; }
     },
   },
 
   "password_gen": {
-    ad: "Şifre Üretici",
-    ikon: "🔑",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Şifre Üretici", ikon: "🔑", kategori: "Araç",
     aciklama: "Rastgele güvenli şifre üretir.",
     girdiler: [
       { ad: "uzunluk", etiket: "Uzunluk", tip: "number", placeholder: "16", varsayilan: 16 },
@@ -393,68 +330,35 @@ const TOOLS = {
         for (let j = 0; j < n; j++) s += chars[bytes[j] % chars.length];
         arr.push(s);
       }
-      return { "Şifreler": arr.join("\n") };
+      return { Şifreler: arr.join("\n") };
     },
   },
 
   "uuid_gen": {
-    ad: "UUID Üretici",
-    ikon: "🆔",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "UUID Üretici", ikon: "🆔", kategori: "Araç",
     aciklama: "UUID v4 üretir.",
     girdiler: [{ ad: "adet", etiket: "Adet", tip: "number", placeholder: "5", varsayilan: 5 }],
     calistir: async (p) => {
       const n = parseInt(p.adet) || 5;
       const arr = [];
       for (let i = 0; i < n; i++) arr.push(crypto.randomUUID());
-      return { "UUID": arr.join("\n") };
-    },
-  },
-
-  "jwt_decode": {
-    ad: "JWT Decoder",
-    ikon: "🎫",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "JWT token'ın header ve payload kısmını çözer.",
-    girdiler: [{ ad: "j", etiket: "JWT", tip: "textarea", placeholder: "eyJ..." }],
-    calistir: async (p) => {
-      const j = p.j.trim();
-      const parts = j.split(".");
-      if (parts.length < 2) return { hata: "Geçersiz JWT" };
-      try {
-        const dec = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
-        return {
-          Header: JSON.stringify(dec(parts[0]), null, 2),
-          Payload: JSON.stringify(dec(parts[1]), null, 2),
-        };
-      } catch (e) { return { hata: "Çözülemedi: " + e.message }; }
+      return { UUID: arr.join("\n") };
     },
   },
 
   "qr_gen": {
-    ad: "QR Kod Üret",
-    ikon: "📱",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "QR Kod Üret", ikon: "📱", kategori: "Araç",
     aciklama: "Metinden QR kod üretir.",
     girdiler: [{ ad: "d", etiket: "İçerik", tip: "text", placeholder: "https://..." }],
     calistir: async (p) => {
       const d = p.d.trim();
       if (!d) return { hata: "Boş" };
-      return {
-        "QR URL": `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(d)}`,
-        "İçerik": d,
-      };
+      return { "QR URL": `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(d)}`, İçerik: d };
     },
   },
 
   "morse": {
-    ad: "Morse Encoder",
-    ikon: "📡",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Morse Encoder", ikon: "📡", kategori: "Araç",
     aciklama: "Metni Morse koduna çevirir.",
     girdiler: [{ ad: "t", etiket: "Metin", tip: "text", placeholder: "SOS" }],
     calistir: async (p) => {
@@ -465,11 +369,8 @@ const TOOLS = {
   },
 
   "rot13": {
-    ad: "ROT13 / Caesar",
-    ikon: "🔄",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "Sezar kaydırma şifresi uygular.",
+    ad: "ROT13 / Caesar", ikon: "🔄", kategori: "Araç",
+    aciklama: "Sezar kaydırma şifresi.",
     girdiler: [
       { ad: "t", etiket: "Metin", tip: "text", placeholder: "Merhaba" },
       { ad: "n", etiket: "Kaydırma", tip: "number", placeholder: "13", varsayilan: 13 },
@@ -488,10 +389,7 @@ const TOOLS = {
   },
 
   "hex": {
-    ad: "Hex Encode/Decode",
-    ikon: "🔢",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Hex Encode/Decode", ikon: "🔢", kategori: "Araç",
     aciklama: "Metni hex'e çevirir veya hex'i çözer.",
     girdiler: [{ ad: "t", etiket: "Metin / Hex", tip: "textarea", placeholder: "merhaba veya 6d6572..." }],
     calistir: async (p) => {
@@ -504,10 +402,7 @@ const TOOLS = {
   },
 
   "binary": {
-    ad: "Binary Encoder",
-    ikon: "💾",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Binary Encoder", ikon: "💾", kategori: "Araç",
     aciklama: "Metni binary'e çevirir.",
     girdiler: [{ ad: "t", etiket: "Metin", tip: "text", placeholder: "ABC" }],
     calistir: async (p) => {
@@ -517,10 +412,7 @@ const TOOLS = {
   },
 
   "json_fmt": {
-    ad: "JSON Formatla",
-    ikon: "📋",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "JSON Formatla", ikon: "📋", kategori: "Araç",
     aciklama: "JSON'u okunaklı hale getirir.",
     girdiler: [{ ad: "t", etiket: "JSON", tip: "textarea", placeholder: '{"a":1}' }],
     calistir: async (p) => {
@@ -530,29 +422,19 @@ const TOOLS = {
   },
 
   "url_parse": {
-    ad: "URL Parser",
-    ikon: "🔗",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "URL Parser", ikon: "🔗", kategori: "Araç",
     aciklama: "URL'yi bileşenlerine ayırır.",
     girdiler: [{ ad: "u", etiket: "URL", tip: "text", placeholder: "https://example.com/path?q=1" }],
     calistir: async (p) => {
       try {
         const u = new URL(p.u);
-        return {
-          Protocol: u.protocol, Host: u.hostname, Port: u.port,
-          Path: u.pathname, Query: u.search, Hash: u.hash,
-          Parametreler: u.searchParams.toString(),
-        };
-      } catch (e) { return { hata: "Geçersiz URL" }; }
+        return { Protocol: u.protocol, Host: u.hostname, Port: u.port, Path: u.pathname, Query: u.search, Hash: u.hash, Parametreler: u.searchParams.toString() };
+      } catch { return { hata: "Geçersiz URL" }; }
     },
   },
 
   "user_agent": {
-    ad: "Rastgele User-Agent",
-    ikon: "🖥️",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Rastgele User-Agent", ikon: "🖥️", kategori: "Araç",
     aciklama: "Rastgele UA üretir.",
     girdiler: [{ ad: "adet", etiket: "Adet", tip: "number", placeholder: "5", varsayilan: 5 }],
     calistir: async (p) => {
@@ -570,35 +452,9 @@ const TOOLS = {
     },
   },
 
-  "email_gen": {
-    ad: "Rastgele Email",
-    ikon: "📧",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "Rastgele email adresleri üretir.",
-    girdiler: [
-      { ad: "d", etiket: "Domain", tip: "text", placeholder: "gmail.com", varsayilan: "gmail.com" },
-      { ad: "adet", etiket: "Adet", tip: "number", placeholder: "5", varsayilan: 5 },
-    ],
-    calistir: async (p) => {
-      const d = p.d || "gmail.com";
-      const n = parseInt(p.adet) || 5;
-      const arr = [];
-      for (let i = 0; i < n; i++) {
-        const u = Array.from(crypto.getRandomValues(new Uint8Array(10)))
-          .map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
-        arr.push(`${u}@${d}`);
-      }
-      return { "Emailler": arr.join("\n") };
-    },
-  },
-
   "luhn": {
-    ad: "Luhn (Kart Kontrol)",
-    ikon: "💳",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "Kart numarasının Luhn algoritmasına uygunluğunu kontrol eder.",
+    ad: "Luhn (Kart)", ikon: "💳", kategori: "Araç",
+    aciklama: "Kart numarasının Luhn algoritmasına uygunluğu.",
     girdiler: [{ ad: "n", etiket: "Kart No", tip: "text", placeholder: "4111111111111111" }],
     calistir: async (p) => {
       const n = p.n.replace(/\s/g, "");
@@ -615,28 +471,17 @@ const TOOLS = {
   },
 
   "time_tools": {
-    ad: "Zaman Araçları",
-    ikon: "⏰",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Zaman Araçları", ikon: "⏰", kategori: "Araç",
     aciklama: "Şu anki zaman ve Unix timestamp.",
     girdiler: [],
     calistir: async () => {
       const n = new Date();
-      return {
-        "Şu an": n.toLocaleString('tr-TR'),
-        "Unix": Math.floor(n.getTime() / 1000),
-        "UTC": n.toISOString(),
-        "Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-      };
+      return { "Şu an": n.toLocaleString('tr-TR'), Unix: Math.floor(n.getTime() / 1000), UTC: n.toISOString(), Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone };
     },
   },
 
   "sys_info": {
-    ad: "Sistem Bilgisi",
-    ikon: "💻",
-    kategori: "Araçlar",
-    sayfa: 2,
+    ad: "Sistem Bilgisi", ikon: "💻", kategori: "Araç",
     aciklama: "Tarayıcı ve sistem bilgisi.",
     girdiler: [],
     calistir: async () => {
@@ -645,35 +490,12 @@ const TOOLS = {
         "User Agent": navigator.userAgent,
         Dil: navigator.language,
         Ekran: `${screen.width}x${screen.height}`,
-        "Pencere": `${window.innerWidth}x${window.innerHeight}`,
+        Pencere: `${window.innerWidth}x${window.innerHeight}`,
         CPU: navigator.hardwareConcurrency || "?",
         "Zaman Dilimi": Intl.DateTimeFormat().resolvedOptions().timeZone,
       };
     },
   },
-
-  "headers_check": {
-    ad: "Header Kontrol",
-    ikon: "📨",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "HTTP header'ları kontrol eder (CORS engeli olabilir).",
-    girdiler: [{ ad: "u", etiket: "URL", tip: "text", placeholder: "https://example.com" }],
-    backendGerekli: true,
-    calistir: async () => ({ hata: "Tarayıcıda CORS nedeniyle çalışmaz." }),
-  },
-
-  "redirect_check": {
-    ad: "Redirect Kontrol",
-    ikon: "↪️",
-    kategori: "Araçlar",
-    sayfa: 2,
-    aciklama: "URL'nin son yönlendirmesini bulur (CORS gerekir).",
-    girdiler: [{ ad: "u", etiket: "Kısa URL", tip: "text", placeholder: "https://bit.ly/..." }],
-    backendGerekli: true,
-    calistir: async () => ({ hata: "Tarayıcıda CORS nedeniyle çalışmaz." }),
-  },
-
 };
 
 // MD5 (saf JS)
@@ -692,11 +514,7 @@ function md5(str) {
     blks[nblk * 16 - 2] = s.length * 8;
     return blks;
   }
-  function h2(n) {
-    let s = "";
-    for (let i = 0; i <= 3; i++) s += ((n >> (i * 8)) & 0xFF).toString(16).padStart(2, '0');
-    return s;
-  }
+  function h2(n) { let s = ""; for (let i = 0; i <= 3; i++) s += ((n >> (i * 8)) & 0xFF).toString(16).padStart(2, '0'); return s; }
   function utf8(s) { return unescape(encodeURIComponent(s)); }
   str = utf8(str);
   const x = sb(str);
@@ -738,4 +556,4 @@ function md5(str) {
     a = au(a, oa); b = au(b, ob); c = au(c, oc); d = au(d, od);
   }
   return h2(a) + h2(b) + h2(c) + h2(d);
-}
+                      }
