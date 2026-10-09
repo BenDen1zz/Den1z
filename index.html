@@ -8,70 +8,138 @@
 </head>
 <body>
 
-<video id="bgVideo" autoplay muted loop playsinline>
-  <source src="https://v1.pinimg.com/videos/iht/expMp4/00/21/a1/0021a1b6884477413647428a4f78cdcd_720w.mp4" type="video/mp4">
-</video>
-<div class="overlay"></div>
+<!-- ÜST HEADER -->
+<header class="ust">
+  <div class="ust-sol">
+    <img src="https://i.imgur.com/1YsyvqE.jpeg" alt="Den1zz" class="logo-img">
+    <span class="logo-yazi">DEN1ZZ</span>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menü">
+    <span></span><span></span><span></span>
+  </button>
+</header>
 
-<div class="panel">
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <span>Ana Sayfa</span>
+  <span class="bc-ayrac">/</span>
+  <span class="bc-aktif">Ana Sayfa</span>
+</div>
 
-  <header class="baslik">
-    <div class="logo">
-      <span class="nokta"></span>
-      DEN1ZZ
+<!-- ÜST İKON SATIRI -->
+<div class="ust-ikon-satiri">
+  <div class="bakiye-gosterge">
+    <span class="bakiye-ikon">🎁</span>
+    <div>
+      <div class="bakiye-etiket">Toplam Bakiye</div>
+      <div class="bakiye-deger">0.00 TL</div>
     </div>
-    <div class="ust-sag">
-      <span class="durum"><span class="durum-nokta"></span>Çevrimiçi</span>
-      <span id="saat">--:--:--</span>
-    </div>
-  </header>
+  </div>
+  <div class="kucuk-ikonlar">
+    <span>🛒</span>
+    <span>🎵</span>
+    <span>🔔</span>
+    <span>📊</span>
+  </div>
+</div>
 
-  <div class="icerik">
+<!-- ANNOUNCEMENT BAR -->
+<div class="duyuru-bar">
+  <span class="duyuru-marka">Den1zz</span>
+  <span>HER ZAMAN BİR NUMARA</span>
+</div>
 
-    <aside class="sol">
-      <div class="sayfa-sekmeleri">
-        <button class="sekme aktif" data-sayfa="1">OSINT</button>
-        <button class="sekme" data-sayfa="2">Araçlar</button>
+<!-- BANNER (tek) -->
+<div class="banner-satiri">
+  <div class="banner">
+    <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Banner">
+  </div>
+</div>
+
+<!-- İSTATİSTİK KARTLARI -->
+<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#7c3aed,#a855f7);">
+  <div class="ist-baslik">Kayıtlı Kullanıcılar</div>
+  <div class="ist-deger" id="kayitliSayi">0 Kişi</div>
+  <div class="ist-bar"><div class="ist-dolgu" id="kayitliBar" style="width:0%"></div></div>
+</div>
+
+<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#1e40af,#3b82f6);">
+  <div class="ist-baslik">Sitede Aktif Kişiler</div>
+  <div class="ist-deger" id="aktifSayi">1 Kişi</div>
+  <div class="ist-bar"><div class="ist-dolgu" id="aktifBar" style="width:5%"></div></div>
+</div>
+
+<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#1e40af,#3b82f6);">
+  <div class="ist-baslik">Üyelik Türü</div>
+  <div class="ist-deger">Ücretsiz Üyelik ⚡</div>
+  <div class="ist-bar"><div class="ist-dolgu" style="width:100%"></div></div>
+</div>
+
+<div class="ist-kart" style="--bar-renk: linear-gradient(90deg,#7f1d1d,#dc2626);">
+  <div class="ist-baslik">Toplam Bakiye</div>
+  <div class="ist-deger">0.00 TL</div>
+  <div class="ist-bar"><div class="ist-dolgu" style="width:0%"></div></div>
+</div>
+
+<!-- AKTİVİTE -->
+<div class="bolum">
+  <div class="bolum-baslik">
+    <span>🔍 Den1zz İspiyoncusu</span>
+  </div>
+  <ul class="aktivite" id="aktiviteListe"></ul>
+</div>
+
+<!-- DUYURULAR -->
+<div class="bolum">
+  <div class="bolum-baslik">
+    <span>📢 Duyurular</span>
+  </div>
+  <ul class="duyuru-liste">
+    <li>
+      <div class="duyuru-ikon">⚡</div>
+      <div>
+        <div class="duyuru-baslik">WEB ÇÖZÜMLERİ EKLENDİ</div>
+        <div class="duyuru-tarih">09.10.2026 08:00</div>
       </div>
-      <div class="arama-mini">
-        <input type="text" id="miniArama" placeholder="Araç ara...">
+    </li>
+    <li>
+      <div class="duyuru-ikon">❤️</div>
+      <div>
+        <div class="duyuru-baslik">TAKİP EDİN!</div>
+        <div class="duyuru-tarih">09.10.2026 08:00</div>
       </div>
-      <ul class="tool-liste" id="toolListe"></ul>
-    </aside>
-
-    <main class="sag">
-      <div id="bosEkran" class="bos-ekran">
-        <div class="buyuk-ikon">🔍</div>
-        <h2>Bir araç seç</h2>
-        <p>Soldaki listeden bir araç seç ve değer gir. Tüm sorgular tarayıcıda direkt çalışır.</p>
-        <div class="ipuc"><kbd>Ctrl</kbd> + <kbd>K</kbd> ile hızlı ara</div>
+    </li>
+    <li>
+      <div class="duyuru-ikon">🚀</div>
+      <div>
+        <div class="duyuru-baslik">YENİ ARAÇLAR YOLDA</div>
+        <div class="duyuru-tarih">09.10.2026 08:00</div>
       </div>
+    </li>
+  </ul>
+</div>
 
-      <div id="aktifEkran" class="aktif-ekran">
-        <div class="baslik-satir">
-          <h1 id="aktifBaslik"><span class="ikon"></span><span id="aktifAd"></span></h1>
-          <span class="rozet" id="aktifKategori">OSINT</span>
-        </div>
-        <p class="aciklama" id="aktifAciklama"></p>
-
-        <div class="girdi-kutusu" id="girdiKutusu"></div>
-
-        <button class="calistir-btn" id="calistirBtn">Çalıştır</button>
-
-        <div class="sonuc-kutusu" id="sonucKutusu">
-          <div class="bos-sonuc">Sonuç bekleniyor...</div>
-        </div>
-      </div>
-    </main>
-
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-ust">
+    <span class="drawer-logo">DEN1ZZ</span>
+    <button class="drawer-kapat" id="drawerKapat">✕</button>
   </div>
 
-  <footer class="alt-bar">
-    <span id="toolSayisi">0 araç yüklendi</span>
-    <span>Den1zz v9.2 • Web Edition</span>
-  </footer>
+  <div class="drawer-sekmeler">
+    <button class="d-sekme aktif" data-sayfa="1">OSINT</button>
+    <button class="d-sekme" data-sayfa="2">Araçlar</button>
+  </div>
 
-</div>
+  <div class="drawer-arama">
+    <input type="text" id="drawerArama" placeholder="Araç ara...">
+  </div>
+
+  <ul class="drawer-liste" id="drawerListe"></ul>
+
+  <div class="drawer-alt">Den1zz v9.2</div>
+</aside>
 
 <script src="tools.js"></script>
 <script src="app.js"></script>
