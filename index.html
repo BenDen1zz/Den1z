@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- ============ GİRİŞ EKRANI ============ -->
+<!-- GİRİŞ -->
 <div class="giris-ekran" id="girisEkran">
   <div class="giris-kutu">
     <div class="giris-logo"><img src="https://i.imgur.com/1YsyvqE.jpeg" alt="Den1zz"></div>
@@ -47,22 +47,16 @@
   </div>
 </div>
 
-<!-- ============ PANEL ============ -->
+<!-- PANEL -->
 <div class="panel" id="panel" style="display:none;">
 
-  <!-- ÜST HEADER (MOBİL) -->
   <header class="mobil-ust">
     <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
     <div class="mobil-marka">
       <img src="https://i.imgur.com/1YsyvqE.jpeg">
-      <div>
-        <span>DEN1ZZ</span>
-        <small>YIKAMAZSIN</small>
-      </div>
+      <div><span>DEN1ZZ</span><small>YIKAMAZSIN</small></div>
     </div>
-    <div class="mobil-sag">
-      <div class="mobil-avatar" id="mobilAvatar">D</div>
-    </div>
+    <div class="mobil-avatar" id="mobilAvatar">D</div>
   </header>
 
   <!-- SIDEBAR -->
@@ -80,60 +74,161 @@
       <div class="sb-avatar" id="sbAvatar">D</div>
       <div class="sb-kul-bilgi">
         <div class="sb-kul-isim" id="sbKulIsim">kullanıcı</div>
-        <div class="sb-kul-rol" id="sbKulRol">MEMBER</div>
+        <div class="sb-kul-alt">
+          <span class="sb-kul-rol" id="sbKulRol">Ücretsiz Üyelik</span>
+          <span class="sb-online"><i class="fa-solid fa-circle"></i> Çevrimiçi</span>
+        </div>
       </div>
+      <button class="sb-kul-menu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
     </div>
 
-    <nav class="sb-menu">
-      <button class="sb-item aktif" data-sayfa="anasayfa">
-        <i class="fa-solid fa-house"></i> <span>Ana Sayfa</span>
+    <nav class="sb-menu" id="sbMenu">
+      <!-- Ana Sayfa -->
+      <button class="sb-item" data-sayfa="anasayfa">
+        <span class="sb-ikon ana"><i class="fa-solid fa-house"></i></span>
+        <span>Ana Sayfa</span>
       </button>
-      <button class="sb-item" data-sayfa="araclar">
-        <i class="fa-solid fa-screwdriver-wrench"></i> <span>Araçlar</span>
-      </button>
+
+      <!-- Liderlik -->
       <button class="sb-item" data-sayfa="liderlik">
-        <i class="fa-solid fa-trophy"></i> <span>Liderlik Tablosu</span>
+        <span class="sb-ikon lider"><i class="fa-solid fa-trophy"></i></span>
+        <span>Liderlik Tablosu</span>
       </button>
+
+      <!-- Duyurular -->
       <button class="sb-item" data-sayfa="duyurular">
-        <i class="fa-solid fa-bullhorn"></i> <span>Duyurular</span>
+        <span class="sb-ikon duyuru"><i class="fa-solid fa-bullhorn"></i></span>
+        <span>Duyurular</span>
       </button>
+
+      <div class="sb-ayrac"></div>
+
+      <!-- KATEGORİLER -->
+      <div class="sb-kategori">
+        <span class="sb-kategori-ust">Sorgu Çözümleri</span>
+
+        <div class="sb-grup" data-grup="discord">
+          <button class="sb-grup-ust">
+            <span class="sb-ikon kirmizi"><i class="fa-brands fa-discord"></i></span>
+            <span>Discord & Sosyal</span>
+            <i class="fa-solid fa-chevron-down sb-ok"></i>
+          </button>
+          <div class="sb-grup-icerik">
+            <button class="sb-alt-item" data-tool="discord_id"><i class="fa-solid fa-hashtag"></i> Discord ID Sorgu</button>
+            <button class="sb-alt-item" data-tool="discord_username"><i class="fa-solid fa-at"></i> Discord Username Bul</button>
+            <button class="sb-alt-item" data-tool="telegram"><i class="fa-brands fa-telegram"></i> Telegram Kanal</button>
+            <button class="sb-alt-item" data-tool="github_user"><i class="fa-brands fa-github"></i> GitHub Kullanıcı</button>
+            <button class="sb-alt-item" data-tool="reddit_user"><i class="fa-brands fa-reddit"></i> Reddit Kullanıcı</button>
+            <button class="sb-alt-item" data-tool="gravatar"><i class="fa-solid fa-user-circle"></i> Gravatar Kontrol</button>
+          </div>
+        </div>
+
+        <div class="sb-grup" data-grup="email">
+          <button class="sb-grup-ust">
+            <span class="sb-ikon turuncu"><i class="fa-solid fa-envelope"></i></span>
+            <span>Email & Doğrulama</span>
+            <i class="fa-solid fa-chevron-down sb-ok"></i>
+          </button>
+          <div class="sb-grup-icerik">
+            <button class="sb-alt-item" data-tool="email_breach"><i class="fa-solid fa-shield"></i> Email Breach Check</button>
+            <button class="sb-alt-item" data-tool="email_val"><i class="fa-solid fa-check-circle"></i> Email Doğrula</button>
+            <button class="sb-alt-item" data-tool="email_gen"><i class="fa-solid fa-wand-magic-sparkles"></i> Rastgele Email</button>
+          </div>
+        </div>
+
+        <div class="sb-grup" data-grup="network">
+          <button class="sb-grup-ust">
+            <span class="sb-ikon mavi"><i class="fa-solid fa-network-wired"></i></span>
+            <span>IP & Ağ Araçları</span>
+            <i class="fa-solid fa-chevron-down sb-ok"></i>
+          </button>
+          <div class="sb-grup-icerik">
+            <button class="sb-alt-item" data-tool="ip_sorgu"><i class="fa-solid fa-globe"></i> IP Sorgu</button>
+            <button class="sb-alt-item" data-tool="benim_ip"><i class="fa-solid fa-location-dot"></i> Benim IP'm</button>
+            <button class="sb-alt-item" data-tool="domain_geo"><i class="fa-solid fa-map"></i> Domain Geo</button>
+            <button class="sb-alt-item" data-tool="mac_sorgu"><i class="fa-solid fa-plug"></i> MAC Adresi Sorgu</button>
+            <button class="sb-alt-item" data-tool="dns_google"><i class="fa-solid fa-server"></i> DNS Sorgu</button>
+            <button class="sb-alt-item" data-tool="ipv6_sorgu"><i class="fa-solid fa-earth"></i> IPv6 Sorgu</button>
+          </div>
+        </div>
+
+        <div class="sb-grup" data-grup="web">
+          <button class="sb-grup-ust">
+            <span class="sb-ikon yesil"><i class="fa-solid fa-shield-halved"></i></span>
+            <span>Web & Güvenlik</span>
+            <i class="fa-solid fa-chevron-down sb-ok"></i>
+          </button>
+          <div class="sb-grup-icerik">
+            <button class="sb-alt-item" data-tool="cve"><i class="fa-solid fa-bug"></i> CVE Arama</button>
+            <button class="sb-alt-item" data-tool="wayback"><i class="fa-solid fa-clock-rotate-left"></i> Wayback Machine</button>
+          </div>
+        </div>
+
+        <div class="sb-grup" data-grup="araclar">
+          <button class="sb-grup-ust">
+            <span class="sb-ikon mor"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+            <span>Araçlar</span>
+            <i class="fa-solid fa-chevron-down sb-ok"></i>
+          </button>
+          <div class="sb-grup-icerik">
+            <button class="sb-alt-item" data-tool="hash"><i class="fa-solid fa-hashtag"></i> Hash / Base64 / URL</button>
+            <button class="sb-alt-item" data-tool="b64decode"><i class="fa-solid fa-unlock"></i> Base64 Çöz</button>
+            <button class="sb-alt-item" data-tool="jwt_decode"><i class="fa-solid fa-key"></i> JWT Decoder</button>
+            <button class="sb-alt-item" data-tool="password_gen"><i class="fa-solid fa-lock"></i> Şifre Üretici</button>
+            <button class="sb-alt-item" data-tool="uuid_gen"><i class="fa-solid fa-fingerprint"></i> UUID Üretici</button>
+            <button class="sb-alt-item" data-tool="qr_gen"><i class="fa-solid fa-qrcode"></i> QR Kod Üret</button>
+            <button class="sb-alt-item" data-tool="morse"><i class="fa-solid fa-satellite-dish"></i> Morse Encoder</button>
+            <button class="sb-alt-item" data-tool="rot13"><i class="fa-solid fa-arrows-rotate"></i> ROT13 / Caesar</button>
+            <button class="sb-alt-item" data-tool="hex"><i class="fa-solid fa-code"></i> Hex Encode/Decode</button>
+            <button class="sb-alt-item" data-tool="binary"><i class="fa-solid fa-hard-drive"></i> Binary Encoder</button>
+            <button class="sb-alt-item" data-tool="json_fmt"><i class="fa-solid fa-brackets-curly"></i> JSON Formatla</button>
+            <button class="sb-alt-item" data-tool="url_parse"><i class="fa-solid fa-link"></i> URL Parser</button>
+            <button class="sb-alt-item" data-tool="user_agent"><i class="fa-solid fa-desktop"></i> Rastgele User-Agent</button>
+            <button class="sb-alt-item" data-tool="luhn"><i class="fa-solid fa-credit-card"></i> Luhn (Kart)</button>
+            <button class="sb-alt-item" data-tool="time_tools"><i class="fa-solid fa-clock"></i> Zaman Araçları</button>
+            <button class="sb-alt-item" data-tool="sys_info"><i class="fa-solid fa-microchip"></i> Sistem Bilgisi</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sb-ayrac"></div>
+
+      <!-- Profilim -->
       <button class="sb-item" data-sayfa="profil">
-        <i class="fa-solid fa-user"></i> <span>Profilim</span>
+        <span class="sb-ikon profil"><i class="fa-solid fa-user"></i></span>
+        <span>Profilim</span>
       </button>
-      <button class="sb-item admin-only" data-sayfa="admin" id="sbAdminBtn" style="display:none;">
-        <i class="fa-solid fa-shield-halved"></i> <span>Admin Panel</span>
+
+      <!-- Admin -->
+      <button class="sb-item sb-admin" data-sayfa="admin" id="sbAdminBtn" style="display:none;">
+        <span class="sb-ikon admin"><i class="fa-solid fa-shield-halved"></i></span>
+        <span>Admin Panel</span>
+        <span class="sb-yeni">YÖNETİM</span>
+      </button>
+
+      <!-- Çıkış -->
+      <button class="sb-item sb-cikis-item" id="cikisBtn">
+        <span class="sb-ikon cikis"><i class="fa-solid fa-right-from-bracket"></i></span>
+        <span>Sistemden Çıkış Yap</span>
       </button>
     </nav>
 
-    <div class="sb-alt">
-      <button class="sb-cikis" id="cikisBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> <span>Çıkış Yap</span>
-      </button>
-      <div class="sb-versiyon">Den1zz v11.0</div>
-    </div>
+    <div class="sb-versiyon">Den1zz v11.1</div>
   </aside>
 
-  <!-- SIDEBAR OVERLAY (MOBİL) -->
   <div class="sb-overlay" id="sbOverlay"></div>
 
-  <!-- ANA İÇERİK -->
+  <!-- İÇERİK -->
   <main class="icerik" id="icerik">
 
-    <!-- ====== ANASAYFA ====== -->
     <section class="sayfa aktif" id="sayfa-anasayfa">
       <div class="hg-kart">
         <div class="hg-sol">
           <div class="hg-avatar" id="hgAvatar">D</div>
           <div class="hg-bilgi">
-            <div class="hg-isim">
-              <span id="hgMerhaba">Merhaba</span>
-              <span class="rol-rozet" id="hgRol">MEMBER</span>
-            </div>
+            <div class="hg-isim"><span id="hgMerhaba">Merhaba</span><span class="rol-rozet" id="hgRol">MEMBER</span></div>
             <div class="hg-xp-bar"><div class="hg-xp-dolgu" id="hgXpDolgu"></div></div>
-            <div class="hg-xp-yazi">
-              <span>LVL <b id="hgLevel">1</b></span>
-              <span id="hgXpYazi">0 / 100 XP</span>
-            </div>
+            <div class="hg-xp-yazi"><span>LVL <b id="hgLevel">1</b></span><span id="hgXpYazi">0 / 100 XP</span></div>
           </div>
         </div>
       </div>
@@ -154,77 +249,38 @@
       </div>
 
       <div class="blok">
-        <div class="blok-ust">
-          <i class="fa-solid fa-door-open"></i>
-          <span>Den1zz Girişler</span>
-          <span class="blok-canli"><span class="canli-nokta"></span>Canlı</span>
-        </div>
+        <div class="blok-ust"><i class="fa-solid fa-door-open"></i><span>Den1zz Girişler</span><span class="blok-canli"><span class="canli-nokta"></span>Canlı</span></div>
         <ul class="giris-feed" id="girisFeed"></ul>
       </div>
 
       <div class="blok">
-        <div class="blok-ust">
-          <i class="fa-solid fa-bolt"></i>
-          <span>Canlı Akış</span>
-          <span class="blok-canli"><span class="canli-nokta"></span>Canlı</span>
-        </div>
+        <div class="blok-ust"><i class="fa-solid fa-bolt"></i><span>Canlı Akış</span><span class="blok-canli"><span class="canli-nokta"></span>Canlı</span></div>
         <ul class="akis" id="akisListe"></ul>
       </div>
 
       <div class="blok">
-        <div class="blok-ust">
-          <i class="fa-brands fa-spotify"></i>
-          <span>Den1zz Radyo</span>
-        </div>
-        <iframe class="spotify-frame" id="spotifyFrame" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbIVYVBNw9D5K?utm_source=generator&theme=0&autoplay=1" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div class="blok-ust"><i class="fa-brands fa-spotify"></i><span>Den1zz Radyo</span></div>
+        <iframe class="spotify-frame" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbIVYVBNw9D5K?utm_source=generator&theme=0&autoplay=1" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </div>
     </section>
 
-    <!-- ====== ARAÇLAR ====== -->
-    <section class="sayfa" id="sayfa-araclar">
-      <div class="sayfa-baslik">
-        <i class="fa-solid fa-screwdriver-wrench"></i>
-        <h2>Araçlar</h2>
-      </div>
-      <div class="arac-arama">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="aracArama" placeholder="Araç ara...">
-      </div>
-      <div class="arac-grid" id="aracGrid"></div>
-    </section>
-
-    <!-- ====== LİDERLİK ====== -->
     <section class="sayfa" id="sayfa-liderlik">
-      <div class="sayfa-baslik">
-        <i class="fa-solid fa-trophy"></i>
-        <h2>Liderlik Tablosu</h2>
-      </div>
+      <div class="sayfa-baslik"><i class="fa-solid fa-trophy"></i><h2>Liderlik Tablosu</h2></div>
       <ul class="liderlik-tam" id="liderlikTam"></ul>
     </section>
 
-    <!-- ====== DUYURULAR ====== -->
     <section class="sayfa" id="sayfa-duyurular">
-      <div class="sayfa-baslik">
-        <i class="fa-solid fa-bullhorn"></i>
-        <h2>Duyurular</h2>
-      </div>
+      <div class="sayfa-baslik"><i class="fa-solid fa-bullhorn"></i><h2>Duyurular</h2></div>
       <ul class="duyuru-liste" id="duyuruListe"></ul>
     </section>
 
-    <!-- ====== PROFİL ====== -->
     <section class="sayfa" id="sayfa-profil">
-      <div class="sayfa-baslik">
-        <i class="fa-solid fa-user"></i>
-        <h2>Profilim</h2>
-      </div>
+      <div class="sayfa-baslik"><i class="fa-solid fa-user"></i><h2>Profilim</h2></div>
       <div class="profil-kart">
         <div class="pk-banner" id="pkBanner"></div>
         <div class="pk-alt">
           <div class="pk-avatar" id="pkAvatar">D</div>
-          <div class="pk-isim-satir">
-            <span class="pk-isim" id="pkIsim">kullanıcı</span>
-            <span class="rol-rozet" id="pkRol">MEMBER</span>
-          </div>
+          <div class="pk-isim-satir"><span class="pk-isim" id="pkIsim">kullanıcı</span><span class="rol-rozet" id="pkRol">MEMBER</span></div>
           <div class="pk-mail" id="pkMail">ornek@mail.com</div>
           <div class="pk-bio" id="pkBio">Henüz bio eklenmemiş.</div>
           <div class="pk-stats">
@@ -236,13 +292,8 @@
       </div>
     </section>
 
-    <!-- ====== ADMIN ====== -->
     <section class="sayfa" id="sayfa-admin">
-      <div class="sayfa-baslik">
-        <i class="fa-solid fa-shield-halved"></i>
-        <h2>Yönetim Paneli</h2>
-      </div>
-
+      <div class="sayfa-baslik"><i class="fa-solid fa-shield-halved"></i><h2>Yönetim Paneli</h2></div>
       <div class="ap-bolum">
         <div class="ap-bolum-baslik"><i class="fa-solid fa-crown"></i> VIP Ver</div>
         <div class="ap-form">
@@ -256,7 +307,6 @@
         </div>
         <div class="ap-mesaj" id="vipMesaj"></div>
       </div>
-
       <div class="ap-bolum">
         <div class="ap-bolum-baslik"><i class="fa-solid fa-bullhorn"></i> Duyuru Ekle</div>
         <div class="ap-form">
@@ -266,7 +316,6 @@
         </div>
         <div class="ap-mesaj" id="duyuruMesaj"></div>
       </div>
-
       <div class="ap-bolum">
         <div class="ap-bolum-baslik"><i class="fa-solid fa-users"></i> Kullanıcılar</div>
         <ul class="ap-kullanici-liste" id="apKullaniciListe"></ul>
@@ -276,7 +325,7 @@
   </main>
 </div>
 
-<!-- ============ TOOL PANEL ============ -->
+<!-- TOOL PANEL -->
 <div class="tool-panel" id="toolPanel">
   <div class="tool-icerik">
     <div class="tool-panel-ust">
@@ -286,23 +335,18 @@
     <p class="tool-aciklama" id="tpAciklama"></p>
     <div id="tpGirdiler"></div>
     <button class="tool-calistir" id="tpCalistir">ÇALIŞTIR</button>
-    <div class="tool-sonuc" id="tpSonuc">
-      <div class="bos-sonuc">Sonuç bekleniyor...</div>
-    </div>
+    <div class="tool-sonuc" id="tpSonuc"><div class="bos-sonuc">Sonuç bekleniyor...</div></div>
   </div>
 </div>
 
-<!-- ============ PROFİL MODAL (başkalarını gör) ============ -->
+<!-- PROFİL MODAL -->
 <div class="modal-arka" id="profilArka"></div>
 <div class="profil-modal" id="profilModal">
   <div class="pm-banner" id="pmBanner"></div>
   <button class="pm-kapat" id="pmKapat"><i class="fa-solid fa-xmark"></i></button>
   <div class="pm-icerik">
     <div class="pm-avatar" id="pmAvatar">D</div>
-    <div class="pm-isim-satir">
-      <span class="pm-isim" id="pmIsim">kullanıcı</span>
-      <span class="rol-rozet" id="pmRol">MEMBER</span>
-    </div>
+    <div class="pm-isim-satir"><span class="pm-isim" id="pmIsim">kullanıcı</span><span class="rol-rozet" id="pmRol">MEMBER</span></div>
     <div class="pm-mail" id="pmMail">ornek@mail.com</div>
     <div class="pm-bio" id="pmBio">Bio yok.</div>
     <div class="pm-istatistik">
@@ -312,14 +356,13 @@
   </div>
 </div>
 
-<!-- ============ PROFİL DÜZENLE MODAL ============ -->
+<!-- PROFİL DÜZENLE -->
 <div class="modal-arka" id="profilEditArka"></div>
 <div class="profil-edit" id="profilEditModal">
   <div class="pe-ust">
     <div class="pe-baslik"><i class="fa-solid fa-user-pen"></i> Profil Düzenle</div>
     <button class="pe-kapat" id="peKapat"><i class="fa-solid fa-xmark"></i></button>
   </div>
-
   <div class="pe-alan">
     <label>Profil Fotoğrafı</label>
     <div class="pe-foto-satir">
@@ -327,7 +370,6 @@
       <label class="pe-dosya-btn"><i class="fa-solid fa-image"></i> Seç<input type="file" id="peFotoInput" accept="image/*" hidden></label>
     </div>
   </div>
-
   <div class="pe-alan">
     <label>Banner</label>
     <div class="pe-banner-satir">
@@ -335,24 +377,14 @@
       <label class="pe-dosya-btn"><i class="fa-solid fa-image"></i> Seç<input type="file" id="peBannerInput" accept="image/*" hidden></label>
     </div>
   </div>
-
-  <div class="pe-alan">
-    <label>Kullanıcı Adı</label>
-    <input type="text" id="peIsim" placeholder="Yeni isim">
-  </div>
-
-  <div class="pe-alan">
-    <label>Bio</label>
-    <textarea id="peBio" placeholder="Kendinden bahset..."></textarea>
-  </div>
-
+  <div class="pe-alan"><label>Kullanıcı Adı</label><input type="text" id="peIsim" placeholder="Yeni isim"></div>
+  <div class="pe-alan"><label>Bio</label><textarea id="peBio" placeholder="Kendinden bahset..."></textarea></div>
   <div class="pe-alan">
     <label>E-posta Değiştir</label>
     <input type="email" id="peYeniMail" placeholder="Yeni e-posta">
     <input type="password" id="peSifreOnay" placeholder="Onay için şifren" style="margin-top:.5rem;">
     <div class="pe-uyari">E-posta değiştirmek için şifreni girmen gerekir.</div>
   </div>
-
   <button class="pe-kaydet" id="peKaydet"><i class="fa-solid fa-check"></i> KAYDET</button>
   <div class="pe-mesaj" id="peMesaj"></div>
 </div>
