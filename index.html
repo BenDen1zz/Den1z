@@ -131,6 +131,10 @@
           <i class="fa-solid fa-bullhorn"></i>
           <span>Duyurular</span>
         </button>
+        <button class="menu-item" data-sayfa="aktivite">
+          <i class="fa-solid fa-bolt"></i>
+          <span>Canlı Aktivite</span>
+        </button>
       </div>
 
       <div class="menu-grup">
@@ -198,7 +202,7 @@
     </nav>
 
     <div class="sidebar-alt">
-      <span>Den1zz v16.0</span>
+      <span>Den1zz v17.0</span>
     </div>
   </aside>
 
@@ -210,12 +214,10 @@
     <!-- ANA SAYFA -->
     <section class="sayfa aktif" id="sayfa-anasayfa">
 
-      <!-- GİF BANNER -->
       <div class="gif-alan">
         <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Den1zz">
       </div>
 
-      <!-- HOŞ GELDİN -->
       <div class="welcome">
         <div class="welcome-sol">
           <div class="welcome-avatar" id="welcomeAvatar">D</div>
@@ -232,7 +234,6 @@
         </div>
       </div>
 
-      <!-- İSTATİSTİKLER -->
       <div class="ist-satir">
         <div class="ist-kart">
           <div class="ist-ikon"><i class="fa-solid fa-users"></i></div>
@@ -268,36 +269,14 @@
         </div>
       </div>
 
-      <div class="grid-2">
-        <!-- GİRİŞLER -->
-        <div class="panel-kart">
-          <div class="panel-ust">
-            <div class="panel-baslik"><i class="fa-solid fa-door-open"></i> Son Girişler</div>
-            <span class="panel-canli"><span></span> Canlı</span>
-          </div>
-          <ul class="feed" id="feedGirisler"></ul>
-        </div>
-
-        <!-- AKTİVİTE -->
-        <div class="panel-kart">
-          <div class="panel-ust">
-            <div class="panel-baslik"><i class="fa-solid fa-bolt"></i> Canlı Aktivite</div>
-            <span class="panel-canli"><span></span> Canlı</span>
-          </div>
-          <ul class="feed" id="feedAktivite"></ul>
-        </div>
-      </div>
-
-      <!-- LİDERLİK ÖZET -->
       <div class="panel-kart">
         <div class="panel-ust">
-          <div class="panel-baslik"><i class="fa-solid fa-trophy"></i> Liderlik Tablosu</div>
-          <button class="panel-link" data-git="liderlik">Tümünü Gör <i class="fa-solid fa-arrow-right"></i></button>
+          <div class="panel-baslik"><i class="fa-solid fa-door-open"></i> Son Girişler</div>
+          <span class="panel-canli"><span></span> Canlı</span>
         </div>
-        <ul class="liderlik-mini" id="liderlikMini"></ul>
+        <ul class="feed" id="feedGirisler"></ul>
       </div>
 
-      <!-- RADYO -->
       <div class="panel-kart">
         <div class="panel-ust">
           <div class="panel-baslik"><i class="fa-brands fa-spotify"></i> Den1zz Radyo</div>
@@ -326,6 +305,21 @@
         </div>
       </div>
       <ul class="duyuru-liste" id="duyuruListe"></ul>
+    </section>
+
+    <!-- CANLI AKTİVİTE -->
+    <section class="sayfa" id="sayfa-aktivite">
+      <div class="sayfa-ust">
+        <div>
+          <h2><i class="fa-solid fa-bolt"></i> Canlı Aktivite</h2>
+          <p>Tüm sorgu hareketleri gerçek zamanlı</p>
+        </div>
+        <span class="panel-canli"><span></span> Canlı</span>
+      </div>
+
+      <div class="panel-kart">
+        <ul class="feed" id="feedAktiviteTam"></ul>
+      </div>
     </section>
 
     <!-- PROFİL -->
