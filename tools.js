@@ -1,4 +1,4 @@
-// Den1zz v11.1 - Araç tanımları
+// Den1zz v14 - Araç tanımları
 
 const TOOLS = {
 
@@ -14,13 +14,15 @@ const TOOLS = {
       const i = BigInt(uid);
       const ts = Number((i >> 22n) + EPOCH);
       return {
-        "ID": uid,
-        "Oluşturma (UTC)": new Date(ts).toISOString(),
-        "Oluşturma (TR)": new Date(ts).toLocaleString('tr-TR'),
-        "Worker": Number((i & 0x3E0000n) >> 17n),
-        "Process": Number((i & 0x1F000n) >> 12n),
-        "Increment": Number(i & 0xFFFn),
-        "Profil": `https://discord.com/users/${uid}`,
+        "🆔 ID": uid,
+        "📅 Oluşturma (TR)": new Date(ts).toLocaleString('tr-TR'),
+        "⏰ Oluşturma (UTC)": new Date(ts).toISOString(),
+        "⚙️ Worker": Number((i & 0x3E0000n) >> 17n),
+        "🔢 Process": Number((i & 0x1F000n) >> 12n),
+        "🔢 Increment": Number(i & 0xFFFn),
+        "🔗 Profil Linki": `https://discord.com/users/${uid}`,
+        "🖼️ Avatar": `https://cdn.discordapp.com/avatars/${uid}/`,
+        "🎨 Banner": `https://cdn.discordapp.com/banners/${uid}/`,
       };
     },
   },
@@ -39,7 +41,7 @@ const TOOLS = {
           body: JSON.stringify({ username: u })
         });
         s["Discord"] = (await r.json()).taken ? "ALINMIŞ" : "MÜSAİT";
-      } catch { s["Discord"] = "hata"; }
+      } catch { s["Discord"] = "sorgulanamadı"; }
       try { s["GitHub"] = (await fetch(`https://api.github.com/users/${u}`)).status === 200 ? "BULUNDU" : "yok"; } catch { s["GitHub"] = "hata"; }
       try { s["Reddit"] = (await fetch(`https://www.reddit.com/user/${u}/about.json`)).status === 200 ? "BULUNDU" : "yok"; } catch { s["Reddit"] = "hata"; }
       return s;
@@ -67,7 +69,12 @@ const TOOLS = {
       const r = await fetch(`https://api.github.com/users/${u}`);
       if (r.status !== 200) return { hata: "Bulunamadı" };
       const d = await r.json();
-      return { Ad: d.name, Bio: d.bio, Repo: d.public_repos, Takipçi: d.followers, Konum: d.location, Email: d.email, Blog: d.blog, Kayıt: d.created_at, Profil: d.html_url };
+      return {
+        Ad: d.name, Bio: d.bio, Repo: d.public_repos,
+        Takipçi: d.followers, Konum: d.location,
+        Email: d.email, Blog: d.blog, Kayıt: d.created_at,
+        Profil: d.html_url,
+      };
     },
   },
 
@@ -81,7 +88,12 @@ const TOOLS = {
       const r = await fetch(`https://www.reddit.com/user/${u}/about.json`);
       if (r.status !== 200) return { hata: "Bulunamadı" };
       const d = (await r.json()).data;
-      return { Kullanıcı: d.name, "Link Karma": d.link_karma, "Yorum Karma": d.comment_karma, Kayıt: new Date(d.created_utc * 1000).toLocaleString('tr-TR') };
+      return {
+        Kullanıcı: d.name,
+        "Link Karma": d.link_karma,
+        "Yorum Karma": d.comment_karma,
+        Kayıt: new Date(d.created_utc * 1000).toLocaleString('tr-TR'),
+      };
     },
   },
 
@@ -94,7 +106,12 @@ const TOOLS = {
       if (!e) return { hata: "Boş" };
       const hash = md5(e);
       const r = await fetch(`https://www.gravatar.com/avatar/${hash}?d=404`, { method: "HEAD" });
-      return { Email: e, "MD5 Hash": hash, Gravatar: r.status === 200 ? "VAR" : "yok", Profil: `https://www.gravatar.com/${hash}` };
+      return {
+        Email: e,
+        "MD5 Hash": hash,
+        Gravatar: r.status === 200 ? "VAR" : "yok",
+        Profil: `https://www.gravatar.com/${hash}`,
+      };
     },
   },
 
@@ -113,6 +130,7 @@ const TOOLS = {
           const d = await r.json();
           const bs = d.breaches || [];
           out["XposedOrNot"] = Array.isArray(bs) && bs.length ? `${bs.length} breach` : "Temiz";
+          if (Array.isArray(bs) && bs.length) out["Sızıntılar"] = bs.join(", ");
         }
       } catch { out["XposedOrNot"] = "hata"; }
       return out;
@@ -132,7 +150,7 @@ const TOOLS = {
 
   "email_gen": {
     ad: "Rastgele Email", ikon: "📧", kategori: "Email",
-    aciklama: "Rastgele email üretir.",
+    aciklama: "Rastgele email adresleri üretir.",
     girdiler: [
       { ad: "d", etiket: "Domain", tip: "text", placeholder: "gmail.com", varsayilan: "gmail.com" },
       { ad: "adet", etiket: "Adet", tip: "number", placeholder: "5", varsayilan: 5 },
@@ -142,7 +160,8 @@ const TOOLS = {
       const n = parseInt(p.adet) || 5;
       const arr = [];
       for (let i = 0; i < n; i++) {
-        const u = Array.from(crypto.getRandomValues(new Uint8Array(10))).map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
+        const u = Array.from(crypto.getRandomValues(new Uint8Array(10)))
+          .map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
         arr.push(`${u}@${d}`);
       }
       return { Emailler: arr.join("\n") };
@@ -152,16 +171,25 @@ const TOOLS = {
   // ============ IP & AĞ ============
   "ip_sorgu": {
     ad: "IP Sorgu", ikon: "🌐", kategori: "Ağ",
-    aciklama: "IP veya domain için konum ve ISP bilgisi.",
-    girdiler: [{ ad: "q", etiket: "IP / Domain", tip: "text", placeholder: "8.8.8.8" }],
+    aciklama: "IP veya domain için konum, ISP ve zaman dilimi bilgisi.",
+    girdiler: [{ ad: "q", etiket: "IP / Domain", tip: "text", placeholder: "8.8.8.8 veya google.com" }],
     calistir: async (p) => {
       const q = p.q.trim();
       if (!q) return { hata: "Boş" };
       const r = await fetch(`http://ip-api.com/json/${q}?lang=tr`);
       const d = await r.json();
       if (d.status !== "success") return { hata: d.message || "Başarısız" };
-      delete d.status; delete d.query_type;
-      return d;
+      return {
+        IP: d.query,
+        Ülke: d.country,
+        Şehir: d.city,
+        Bölge: d.regionName,
+        ISP: d.isp,
+        Org: d.org,
+        "Zaman Dilimi": d.timezone,
+        Enlem: d.lat,
+        Boylam: d.lon,
+      };
     },
   },
 
@@ -172,8 +200,14 @@ const TOOLS = {
     calistir: async () => {
       const r = await fetch("http://ip-api.com/json/?lang=tr");
       const d = await r.json();
-      delete d.status;
-      return d;
+      return {
+        IP: d.query,
+        Ülke: d.country,
+        Şehir: d.city,
+        Bölge: d.regionName,
+        ISP: d.isp,
+        "Zaman Dilimi": d.timezone,
+      };
     },
   },
 
@@ -187,8 +221,15 @@ const TOOLS = {
       const r = await fetch(`http://ip-api.com/json/${d}?lang=tr`);
       const j = await r.json();
       if (j.status !== "success") return { hata: j.message };
-      delete j.status;
-      return j;
+      return {
+        Domain: d,
+        IP: j.query,
+        Ülke: j.country,
+        Şehir: j.city,
+        ISP: j.isp,
+        Enlem: j.lat,
+        Boylam: j.lon,
+      };
     },
   },
 
@@ -207,7 +248,7 @@ const TOOLS = {
 
   "dns_google": {
     ad: "DNS Sorgu", ikon: "🔍", kategori: "Ağ",
-    aciklama: "A, AAAA, MX, TXT, NS kayıtları.",
+    aciklama: "Google DNS üzerinden A, AAAA, MX, TXT, NS kayıtlarını çeker.",
     girdiler: [{ ad: "d", etiket: "Domain", tip: "text", placeholder: "google.com" }],
     calistir: async (p) => {
       const d = p.d.trim();
@@ -227,7 +268,7 @@ const TOOLS = {
 
   "ipv6_sorgu": {
     ad: "IPv6 Sorgu", ikon: "🌍", kategori: "Ağ",
-    aciklama: "Domain'in AAAA kayıtları.",
+    aciklama: "Domain'in AAAA kayıtlarını getirir.",
     girdiler: [{ ad: "d", etiket: "Domain", tip: "text", placeholder: "google.com" }],
     calistir: async (p) => {
       const d = p.d.trim();
@@ -242,7 +283,7 @@ const TOOLS = {
   // ============ WEB & GÜVENLİK ============
   "cve": {
     ad: "CVE Arama", ikon: "🛠️", kategori: "Web",
-    aciklama: "NVD üzerinden CVE araması.",
+    aciklama: "NVD üzerinden CVE araması yapar.",
     girdiler: [{ ad: "q", etiket: "Kelime", tip: "text", placeholder: "apache" }],
     calistir: async (p) => {
       const q = p.q.trim();
@@ -256,7 +297,7 @@ const TOOLS = {
 
   "wayback": {
     ad: "Wayback Machine", ikon: "🕰️", kategori: "Web",
-    aciklama: "Arşivlenmiş site snapshot'ı.",
+    aciklama: "Arşivlenmiş site snapshot'ını bulur.",
     girdiler: [{ ad: "u", etiket: "URL", tip: "text", placeholder: "example.com" }],
     calistir: async (p) => {
       const u = p.u.trim();
@@ -272,7 +313,7 @@ const TOOLS = {
   // ============ ARAÇLAR ============
   "hash": {
     ad: "Hash / Base64 / URL", ikon: "#️⃣", kategori: "Araç",
-    aciklama: "Metni MD5, SHA, Base64, URL encode eder.",
+    aciklama: "Metni MD5, SHA-1, SHA-256, Base64 ve URL encode eder.",
     girdiler: [{ ad: "t", etiket: "Metin", tip: "textarea", placeholder: "metin" }],
     calistir: async (p) => {
       const t = p.t;
@@ -282,6 +323,7 @@ const TOOLS = {
         MD5: md5(t),
         "SHA-1": b2h(await crypto.subtle.digest("SHA-1", enc)),
         "SHA-256": b2h(await crypto.subtle.digest("SHA-256", enc)),
+        "SHA-512": b2h(await crypto.subtle.digest("SHA-512", enc)),
         Base64: btoa(unescape(encodeURIComponent(t))),
         "URL Enc": encodeURIComponent(t),
       };
@@ -330,7 +372,7 @@ const TOOLS = {
         for (let j = 0; j < n; j++) s += chars[bytes[j] % chars.length];
         arr.push(s);
       }
-      return { Şifreler: arr.join("\n") };
+      return { "Şifreler": arr.join("\n") };
     },
   },
 
@@ -342,7 +384,7 @@ const TOOLS = {
       const n = parseInt(p.adet) || 5;
       const arr = [];
       for (let i = 0; i < n; i++) arr.push(crypto.randomUUID());
-      return { UUID: arr.join("\n") };
+      return { "UUID": arr.join("\n") };
     },
   },
 
@@ -353,7 +395,10 @@ const TOOLS = {
     calistir: async (p) => {
       const d = p.d.trim();
       if (!d) return { hata: "Boş" };
-      return { "QR URL": `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(d)}`, İçerik: d };
+      return {
+        "QR URL": `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(d)}`,
+        "İçerik": d,
+      };
     },
   },
 
@@ -370,7 +415,7 @@ const TOOLS = {
 
   "rot13": {
     ad: "ROT13 / Caesar", ikon: "🔄", kategori: "Araç",
-    aciklama: "Sezar kaydırma şifresi.",
+    aciklama: "Sezar kaydırma şifresi uygular.",
     girdiler: [
       { ad: "t", etiket: "Metin", tip: "text", placeholder: "Merhaba" },
       { ad: "n", etiket: "Kaydırma", tip: "number", placeholder: "13", varsayilan: 13 },
@@ -428,7 +473,11 @@ const TOOLS = {
     calistir: async (p) => {
       try {
         const u = new URL(p.u);
-        return { Protocol: u.protocol, Host: u.hostname, Port: u.port, Path: u.pathname, Query: u.search, Hash: u.hash, Parametreler: u.searchParams.toString() };
+        return {
+          Protocol: u.protocol, Host: u.hostname, Port: u.port,
+          Path: u.pathname, Query: u.search, Hash: u.hash,
+          Parametreler: u.searchParams.toString(),
+        };
       } catch { return { hata: "Geçersiz URL" }; }
     },
   },
@@ -454,7 +503,7 @@ const TOOLS = {
 
   "luhn": {
     ad: "Luhn (Kart)", ikon: "💳", kategori: "Araç",
-    aciklama: "Kart numarasının Luhn algoritmasına uygunluğu.",
+    aciklama: "Kart numarasının Luhn algoritmasına uygunluğunu kontrol eder.",
     girdiler: [{ ad: "n", etiket: "Kart No", tip: "text", placeholder: "4111111111111111" }],
     calistir: async (p) => {
       const n = p.n.replace(/\s/g, "");
@@ -476,7 +525,12 @@ const TOOLS = {
     girdiler: [],
     calistir: async () => {
       const n = new Date();
-      return { "Şu an": n.toLocaleString('tr-TR'), Unix: Math.floor(n.getTime() / 1000), UTC: n.toISOString(), Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone };
+      return {
+        "Şu an": n.toLocaleString('tr-TR'),
+        Unix: Math.floor(n.getTime() / 1000),
+        UTC: n.toISOString(),
+        Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
     },
   },
 
@@ -556,4 +610,4 @@ function md5(str) {
     a = au(a, oa); b = au(b, ob); c = au(c, oc); d = au(d, od);
   }
   return h2(a) + h2(b) + h2(c) + h2(d);
-                      }
+    }
