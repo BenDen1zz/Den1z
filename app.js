@@ -1,4 +1,4 @@
-// Den1zz v16 — Sıfırdan, görünüm odaklı
+// Den1zz v17 — Canlı aktivite ayrı sayfa, isim renkleri
 
 const ADMIN_EMAIL = 'gizlihesap40444@gmail.com';
 const DB = {
@@ -189,21 +189,17 @@ function siteGuncelle() {
   const k = dbAl(DB.kul, {});
   const u = k[aktifKullanici.email];
   const rol = rolHesapla(u, aktifKullanici.email);
-  const { level } = levelHesapla(u.xp || 0);
 
-  // Sidebar
   document.getElementById('sbAvatar').textContent = u.pp ? '' : u.kadi[0].toUpperCase();
   if (u.pp) document.getElementById('sbAvatar').style.backgroundImage = `url(${u.pp})`;
   document.getElementById('sbIsim').textContent = u.kadi;
   document.getElementById('sbRol').textContent = rol === 'admin' ? 'Yönetici' : (rol === 'vip' ? 'VIP Üyelik' : 'Ücretsiz Üyelik');
 
-  // Topbar
   document.getElementById('topbarAvatar').textContent = u.pp ? '' : u.kadi[0].toUpperCase();
   if (u.pp) document.getElementById('topbarAvatar').style.backgroundImage = `url(${u.pp})`;
   document.getElementById('tpIsim').textContent = u.kadi;
   document.getElementById('tpRol').textContent = rolEtiket(rol);
 
-  // Welcome
   document.getElementById('welcomeAvatar').textContent = u.pp ? '' : u.kadi[0].toUpperCase();
   if (u.pp) document.getElementById('welcomeAvatar').style.backgroundImage = `url(${u.pp})`;
   document.getElementById('welcomeIsim').textContent = u.kadi;
@@ -216,8 +212,7 @@ function siteGuncelle() {
   sbXpGuncelle();
   istGuncelle();
   feedGirislerGuncelle();
-  feedAktiviteGuncelle();
-  liderlikMiniGuncelle();
+  feedAktiviteTamGuncelle();
   liderlikTamGuncelle();
   duyuruGuncelle();
   profilSayfaGuncelle();
@@ -248,7 +243,8 @@ function istGuncelle() {
 
 function feedGirislerGuncelle() {
   const ul = document.getElementById('feedGirisler');
-  const girisler = dbAl(DB.girisler, []).slice(0, 12);
+  if (!ul) return;
+  const girisler = dbAl(DB.girisler, []).slice(0, 15);
   if (!girisler.length) { ul.innerHTML = '<li class="bos-feed">Henüz giriş yok.</li>'; return; }
   ul.innerHTML = '';
   girisler.forEach(g => {
@@ -258,7 +254,7 @@ function feedGirislerGuncelle() {
     li.innerHTML = `
       <div class="feed-avatar">${g.pp ? '' : bas}</div>
       <div class="feed-içerik">
-        <b>${g.kadi}</b>
+        <b class="isim-${rol}">${g.kadi}</b>
         <span class="rozet" data-rol="${rol}" style="font-size:.55rem;padding:.15rem .4rem;">${rolEtiket(rol)}</span>
       </div>
       <span class="feed-saat">${saatFormat(g.zaman)}</span>
@@ -270,18 +266,21 @@ function feedGirislerGuncelle() {
   });
 }
 
-function feedAktiviteGuncelle() {
-  const ul = document.getElementById('feedAktivite');
-  const sorgular = dbAl(DB.sorgular, []).slice(0, 12);
+function feedAktiviteTamGuncelle() {
+  const ul = document.getElementById('feedAktiviteTam');
+  if (!ul) return;
+  const sorgular = dbAl(DB.sorgular, []);
   if (!sorgular.length) { ul.innerHTML = '<li class="bos-feed">Henüz sorgu yapılmadı.</li>'; return; }
+  const k = dbAl(DB.kul, {});
   ul.innerHTML = '';
   sorgular.forEach(s => {
     const li = document.createElement('li');
     const bas = s.kadi[0].toUpperCase();
+    const sRol = k[s.email] ? rolHesapla(k[s.email], s.email) : 'member';
     li.innerHTML = `
       <div class="feed-avatar">${s.pp ? '' : bas}</div>
       <div class="feed-içerik">
-        <b>${s.kadi}</b>
+        <b class="isim-${sRol}">${s.kadi}</b>
         <span>"${s.arac}" sorgusu yaptı</span>
       </div>
       <span class="feed-xp">+${s.xp} XP</span>
@@ -290,27 +289,6 @@ function feedAktiviteGuncelle() {
     const av = li.querySelector('.feed-avatar');
     if (s.pp) av.style.backgroundImage = `url(${s.pp})`;
     av.onclick = () => profilGoster(s.email);
-    ul.appendChild(li);
-  });
-}
-
-function liderlikMiniGuncelle() {
-  const ul = document.getElementById('liderlikMini');
-  const k = dbAl(DB.kul, {});
-  const liste = Object.values(k)
-    .map(u => ({ ...u, level: levelHesapla(u.xp || 0).level, xp: u.xp || 0 }))
-    .sort((a, b) => b.xp - a.xp).slice(0, 5);
-
-  if (!liste.length) { ul.innerHTML = '<li class="bos-feed">Henüz kimse yok.</li>'; return; }
-  ul.innerHTML = '';
-  liste.forEach((u, i) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <span class="mini-sira">${i + 1}</span>
-      <span class="mini-isim">${u.kadi}</span>
-      <span class="mini-level">LVL ${u.level}</span>
-      <span class="mini-xp">${u.xp} XP</span>
-    `;
     ul.appendChild(li);
   });
 }
@@ -327,9 +305,10 @@ function liderlikTamGuncelle() {
   ul.innerHTML = '';
   liste.forEach((u, i) => {
     const li = document.createElement('li');
+    const rol = rolHesapla(u, u.email);
     li.innerHTML = `
       <span class="lr-sira">${i + 1}</span>
-      <span class="lr-isim">${u.kadi}</span>
+      <span class="lr-isim isim-${rol}">${u.kadi}</span>
       <span class="lr-level">LVL ${u.level}</span>
       <span class="lr-xp">${u.xp} XP</span>
     `;
@@ -410,23 +389,22 @@ function sayfaDegistir(ad) {
 
   if (ad === 'profil') profilSayfaGuncelle();
   if (ad === 'admin') adminGuncelle();
+  if (ad === 'aktivite') feedAktiviteTamGuncelle();
 }
 
-// ============ KATEGORİ ARA ============
+// ============ KATEGORİ ============
 document.querySelectorAll('.menu-kategori').forEach(btn => {
   btn.onclick = () => {
     const kat = btn.dataset.kategori;
     const araclar = Object.entries(TOOLS).filter(([_, t]) => t.kategori === kat);
     if (!araclar.length) { toast('Bu kategoride araç yok.'); return; }
-
-    // İlk aracı aç, sidebar'a kategori listesini göster
     const [ilkId] = araclar[0];
     aracAc(ilkId);
     kapatMobil();
   };
 });
 
-// ============ ARAÇ AÇ ============
+// ============ ARAÇ ============
 function aracAc(id) {
   const t = TOOLS[id];
   if (!t) return;
@@ -496,7 +474,7 @@ document.getElementById('aracCalistir').onclick = async () => {
       });
       dbYaz(DB.sorgular, sorgular.slice(0, 40));
 
-      feedAktiviteGuncelle();
+      feedAktiviteTamGuncelle();
       istGuncelle();
       toast(`+${xp} XP kazandın`);
     }
@@ -751,7 +729,7 @@ function adminListeGuncelle() {
     const li = document.createElement('li');
     li.innerHTML = `
       <div class="admin-avatar">${u.pp ? '' : u.kadi[0].toUpperCase()}</div>
-      <span class="admin-isim">${u.kadi}</span>
+      <span class="admin-isim isim-${rol}">${u.kadi}</span>
       <span class="rozet" data-rol="${rol}" style="font-size:.55rem;padding:.15rem .4rem;">${rolEtiket(rol)}</span>
     `;
     const av = li.querySelector('.admin-avatar');
@@ -776,8 +754,7 @@ window.addEventListener('storage', (e) => {
   if ([DB.kul, DB.duyuru, DB.girisler, DB.sorgular].includes(e.key)) {
     istGuncelle();
     feedGirislerGuncelle();
-    feedAktiviteGuncelle();
-    liderlikMiniGuncelle();
+    feedAktiviteTamGuncelle();
     liderlikTamGuncelle();
     duyuruGuncelle();
     adminGuncelle();
