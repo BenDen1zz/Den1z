@@ -9,12 +9,7 @@
 </head>
 <body>
 
-<!-- VIDEO ARKA PLAN -->
-<video id="bgVideo" autoplay muted loop playsinline>
-  <source src="bg.mp4" type="video/mp4">
-</video>
-<div class="bg-overlay"></div>
-<div class="bg-noise"></div>
+<div class="bg-grid"></div>
 
 <!-- GİRİŞ -->
 <div class="auth-ekran" id="authEkran">
@@ -27,12 +22,10 @@
       <h1>DEN1ZZ</h1>
       <p>YIKAMAZSIN</p>
     </div>
-
     <div class="auth-tabs">
       <button class="auth-tab aktif" data-mod="login">GİRİŞ</button>
       <button class="auth-tab" data-mod="register">KAYIT</button>
     </div>
-
     <form class="auth-form" id="authForm" autocomplete="off">
       <div class="auth-girdi" id="girdiKullanici" style="display:none;">
         <i class="fa-solid fa-at"></i>
@@ -50,7 +43,6 @@
       <div class="auth-hata" id="authHata"></div>
       <button type="submit" class="auth-buton" id="authButon">GİRİŞ YAP</button>
     </form>
-
     <div class="auth-alt">
       <span id="altYazi">Hesabın yok mu?</span>
       <a href="#" id="altLink">Kayıt ol</a>
@@ -58,45 +50,29 @@
   </div>
 </div>
 
-<!-- ANA SİTE -->
+<!-- SİTE -->
 <div class="site" id="site" style="display:none;">
 
-  <!-- ÜST BAR -->
   <header class="topbar">
     <button class="topbar-menu" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
-
     <div class="topbar-marka">
       <img src="https://i.imgur.com/7Omt7hc.png" alt="Logo">
-      <div>
-        <span>DEN1ZZ</span>
-        <small>YIKAMAZSIN</small>
-      </div>
+      <div><span>DEN1ZZ</span><small>YIKAMAZSIN</small></div>
     </div>
-
     <div class="topbar-sag">
-      <div class="topbar-arama">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="hizliArama" placeholder="Araç ara...">
-        <kbd>⌘K</kbd>
-      </div>
-
-      <button class="topbar-ikon" id="bildirimBtn">
-        <i class="fa-solid fa-bell"></i>
-        <span class="bildirim-nokta"></span>
-      </button>
-
+      <button class="topbar-arama-btn" id="aramaAcBtn"><i class="fa-solid fa-magnifying-glass"></i><span>Araç ara...</span><kbd>⌘K</kbd></button>
+      <button class="topbar-ikon" id="gunlukBtn" title="Günlük Ödül"><i class="fa-solid fa-gift"></i><span class="bildirim-nokta" id="gunlukNokta" style="display:none;"></span></button>
+      <button class="topbar-ikon" id="basariBtn" title="Başarımlar"><i class="fa-solid fa-medal"></i></button>
       <div class="topbar-profil" id="topbarProfil">
         <div class="topbar-avatar" id="topbarAvatar">D</div>
         <div class="topbar-profil-bilgi">
           <div class="tp-isim" id="tpIsim">kullanıcı</div>
           <div class="tp-rol" id="tpRol">MEMBER</div>
         </div>
-        <i class="fa-solid fa-chevron-down"></i>
       </div>
     </div>
   </header>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-ust">
       <div class="sb-profil">
@@ -106,10 +82,9 @@
           <div class="sb-rol" id="sbRol">Ücretsiz Üyelik</div>
         </div>
       </div>
-
       <div class="sb-xp">
         <div class="sb-xp-ust">
-          <span>Seviye <b id="sbLevel">1</b></span>
+          <span>Seviye <b id="sbLevel">1</b> · <span id="sbRank">Çaylak</span></span>
           <span id="sbXpYazi">0/100</span>
         </div>
         <div class="sb-xp-bar"><div class="sb-xp-dolgu" id="sbXpDolgu"></div></div>
@@ -119,104 +94,53 @@
     <nav class="sidebar-menu" id="sidebarMenu">
       <div class="menu-grup">
         <div class="menu-baslik">Genel</div>
-        <button class="menu-item aktif" data-sayfa="anasayfa">
-          <i class="fa-solid fa-house"></i>
-          <span>Ana Sayfa</span>
-        </button>
-        <button class="menu-item" data-sayfa="liderlik">
-          <i class="fa-solid fa-trophy"></i>
-          <span>Liderlik</span>
-        </button>
-        <button class="menu-item" data-sayfa="duyurular">
-          <i class="fa-solid fa-bullhorn"></i>
-          <span>Duyurular</span>
-        </button>
-        <button class="menu-item" data-sayfa="aktivite">
-          <i class="fa-solid fa-bolt"></i>
-          <span>Canlı Aktivite</span>
-        </button>
+        <button class="menu-item aktif" data-sayfa="anasayfa"><i class="fa-solid fa-house"></i><span>Ana Sayfa</span></button>
+        <button class="menu-item" data-sayfa="liderlik"><i class="fa-solid fa-trophy"></i><span>Liderlik</span></button>
+        <button class="menu-item" data-sayfa="duyurular"><i class="fa-solid fa-bullhorn"></i><span>Duyurular</span></button>
+        <button class="menu-item" data-sayfa="aktivite"><i class="fa-solid fa-bolt"></i><span>Canlı Aktivite</span></button>
+      </div>
+
+      <div class="menu-grup" id="favoriGrup" style="display:none;">
+        <div class="menu-baslik">Favoriler</div>
+        <div id="favoriListe"></div>
+      </div>
+
+      <div class="menu-grup" id="sonGrup" style="display:none;">
+        <div class="menu-baslik">Son Kullanılanlar</div>
+        <div id="sonListe"></div>
       </div>
 
       <div class="menu-grup">
         <div class="menu-baslik">Sorgu Çözümleri</div>
-
-        <button class="menu-kategori" data-kategori="discord">
-          <i class="fa-brands fa-discord"></i>
-          <span>Discord & Sosyal</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
-
-        <button class="menu-kategori" data-kategori="tc">
-          <i class="fa-solid fa-id-card"></i>
-          <span>TC & Kimlik</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
-
-        <button class="menu-kategori" data-kategori="gsm">
-          <i class="fa-solid fa-mobile-screen"></i>
-          <span>GSM & Telefon</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
-
-        <button class="menu-kategori" data-kategori="adres">
-          <i class="fa-solid fa-location-dot"></i>
-          <span>Adres & Aile</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
-
-        <button class="menu-kategori" data-kategori="network">
-          <i class="fa-solid fa-network-wired"></i>
-          <span>IP & Ağ</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
-
-        <button class="menu-kategori" data-kategori="web">
-          <i class="fa-solid fa-globe"></i>
-          <span>Web & Güvenlik</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
-
-        <button class="menu-kategori" data-kategori="araclar">
-          <i class="fa-solid fa-toolbox"></i>
-          <span>Yardımcı Araçlar</span>
-          <i class="fa-solid fa-chevron-right ok"></i>
-        </button>
+        <button class="menu-kategori" data-kategori="discord"><i class="fa-brands fa-discord"></i><span>Discord & Sosyal</span><i class="fa-solid fa-chevron-right ok"></i></button>
+        <button class="menu-kategori" data-kategori="tc"><i class="fa-solid fa-id-card"></i><span>TC & Kimlik</span><i class="fa-solid fa-chevron-right ok"></i></button>
+        <button class="menu-kategori" data-kategori="gsm"><i class="fa-solid fa-mobile-screen"></i><span>GSM & Telefon</span><i class="fa-solid fa-chevron-right ok"></i></button>
+        <button class="menu-kategori" data-kategori="adres"><i class="fa-solid fa-location-dot"></i><span>Adres & Aile</span><i class="fa-solid fa-chevron-right ok"></i></button>
+        <button class="menu-kategori" data-kategori="network"><i class="fa-solid fa-network-wired"></i><span>IP & Ağ</span><i class="fa-solid fa-chevron-right ok"></i></button>
+        <button class="menu-kategori" data-kategori="web"><i class="fa-solid fa-globe"></i><span>Web & Güvenlik</span><i class="fa-solid fa-chevron-right ok"></i></button>
+        <button class="menu-kategori" data-kategori="araclar"><i class="fa-solid fa-toolbox"></i><span>Yardımcı Araçlar</span><i class="fa-solid fa-chevron-right ok"></i></button>
       </div>
 
       <div class="menu-grup">
         <div class="menu-baslik">Hesap</div>
-        <button class="menu-item" data-sayfa="profil">
-          <i class="fa-solid fa-user"></i>
-          <span>Profilim</span>
-        </button>
-        <button class="menu-item menu-admin" data-sayfa="admin" id="menuAdmin" style="display:none;">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span>Admin Panel</span>
-          <span class="menu-yeni">YÖNETİM</span>
-        </button>
-        <button class="menu-item menu-cikis" id="cikisBtn">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span>Çıkış Yap</span>
-        </button>
+        <button class="menu-item" data-sayfa="profil"><i class="fa-solid fa-user"></i><span>Profilim</span></button>
+        <button class="menu-item" data-sayfa="basari"><i class="fa-solid fa-medal"></i><span>Başarımlar</span></button>
+        <button class="menu-item menu-admin" data-sayfa="admin" id="menuAdmin" style="display:none;"><i class="fa-solid fa-shield-halved"></i><span>Admin Panel</span><span class="menu-yeni">YÖNETİM</span></button>
+        <button class="menu-item menu-cikis" id="cikisBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Çıkış Yap</span></button>
       </div>
     </nav>
 
     <div class="sidebar-alt">
-      <span>Den1zz v17.0</span>
+      <span>Den1zz v18.0</span>
     </div>
   </aside>
 
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- İÇERİK -->
   <main class="icerik" id="icerik">
 
-    <!-- ANA SAYFA -->
     <section class="sayfa aktif" id="sayfa-anasayfa">
-
-      <div class="gif-alan">
-        <img src="https://i.imgur.com/3Z1zMTt.gif" alt="Den1zz">
-      </div>
+      <div class="gif-alan"><img src="https://i.imgur.com/3Z1zMTt.gif" alt="Den1zz"></div>
 
       <div class="welcome">
         <div class="welcome-sol">
@@ -225,11 +149,13 @@
             <div class="welcome-isim">
               <h2>Hoş geldin, <span id="welcomeIsim">kullanıcı</span></h2>
               <span class="rozet" id="welcomeRozet" data-rol="member">MEMBER</span>
+              <span class="rozet-rank" id="welcomeRank">Çaylak</span>
             </div>
             <p class="welcome-alt">Bugün ne sorgulamak istersin?</p>
           </div>
         </div>
         <div class="welcome-aksiyon">
+          <div class="streak" id="streak" title="Üst üste giriş"><i class="fa-solid fa-fire"></i> <b>0</b> gün</div>
           <button class="w-btn" id="wBtnArac"><i class="fa-solid fa-bolt"></i> Hızlı Sorgu</button>
         </div>
       </div>
@@ -237,35 +163,20 @@
       <div class="ist-satir">
         <div class="ist-kart">
           <div class="ist-ikon"><i class="fa-solid fa-users"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">KAYITLI ÜYE</div>
-            <div class="ist-deger" id="istKayitli">0</div>
-          </div>
-          <div class="ist-trend"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          <div class="ist-bilgi"><div class="ist-baslik">KAYITLI ÜYE</div><div class="ist-deger" data-sayi id="istKayitli">0</div></div>
         </div>
         <div class="ist-kart">
           <div class="ist-ikon"><i class="fa-solid fa-signal"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">ŞU AN AKTİF</div>
-            <div class="ist-deger" id="istAktif">1</div>
-          </div>
+          <div class="ist-bilgi"><div class="ist-baslik">ŞU AN AKTİF</div><div class="ist-deger" data-sayi id="istAktif">1</div></div>
           <div class="ist-canli"><span></span> Canlı</div>
         </div>
         <div class="ist-kart">
           <div class="ist-ikon"><i class="fa-solid fa-fire"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">TOPLAM SORGU</div>
-            <div class="ist-deger" id="istSorgu">0</div>
-          </div>
-          <div class="ist-trend"><i class="fa-solid fa-bolt"></i></div>
+          <div class="ist-bilgi"><div class="ist-baslik">TOPLAM SORGU</div><div class="ist-deger" data-sayi id="istSorgu">0</div></div>
         </div>
         <div class="ist-kart">
           <div class="ist-ikon"><i class="fa-solid fa-crown"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">SEVİYEN</div>
-            <div class="ist-deger" id="istLevel">LVL 1</div>
-          </div>
-          <div class="ist-trend"><i class="fa-solid fa-star"></i></div>
+          <div class="ist-bilgi"><div class="ist-baslik">SEVİYEN</div><div class="ist-deger" id="istLevel">LVL 1</div></div>
         </div>
       </div>
 
@@ -285,126 +196,97 @@
       </div>
     </section>
 
-    <!-- LİDERLİK -->
     <section class="sayfa" id="sayfa-liderlik">
       <div class="sayfa-ust">
-        <div>
-          <h2><i class="fa-solid fa-trophy"></i> Liderlik Tablosu</h2>
-          <p>En çok XP kazanan kullanıcılar</p>
-        </div>
+        <div><h2><i class="fa-solid fa-trophy"></i> Liderlik Tablosu</h2><p>En çok XP kazanan kullanıcılar</p></div>
       </div>
       <ul class="liderlik-tam" id="liderlikTam"></ul>
     </section>
 
-    <!-- DUYURULAR -->
     <section class="sayfa" id="sayfa-duyurular">
       <div class="sayfa-ust">
-        <div>
-          <h2><i class="fa-solid fa-bullhorn"></i> Duyurular</h2>
-          <p>Den1zz ekibinden son gelişmeler</p>
-        </div>
+        <div><h2><i class="fa-solid fa-bullhorn"></i> Duyurular</h2><p>Den1zz ekibinden son gelişmeler</p></div>
       </div>
       <ul class="duyuru-liste" id="duyuruListe"></ul>
     </section>
 
-    <!-- CANLI AKTİVİTE -->
     <section class="sayfa" id="sayfa-aktivite">
       <div class="sayfa-ust">
-        <div>
-          <h2><i class="fa-solid fa-bolt"></i> Canlı Aktivite</h2>
-          <p>Tüm sorgu hareketleri gerçek zamanlı</p>
-        </div>
-        <span class="panel-canli"><span></span> Canlı</span>
+        <div><h2><i class="fa-solid fa-bolt"></i> Canlı Aktivite</h2><p>Tüm sorgu hareketleri gerçek zamanlı</p></div>
       </div>
-
-      <div class="panel-kart">
-        <ul class="feed" id="feedAktiviteTam"></ul>
+      <div class="aktivite-filtre" id="aktiviteFiltre">
+        <button class="af-btn aktif" data-filtre="hepsi">Hepsi</button>
+        <button class="af-btn" data-filtre="admin">Admin</button>
+        <button class="af-btn" data-filtre="vip">VIP</button>
+        <button class="af-btn" data-filtre="member">Member</button>
       </div>
+      <div class="panel-kart"><ul class="feed" id="feedAktiviteTam"></ul></div>
     </section>
 
-    <!-- PROFİL -->
+    <section class="sayfa" id="sayfa-basari">
+      <div class="sayfa-ust">
+        <div><h2><i class="fa-solid fa-medal"></i> Başarımlar</h2><p>Kazandığın rozetler ve kalanlar</p></div>
+      </div>
+      <div class="basari-grid" id="basariGrid"></div>
+    </section>
+
     <section class="sayfa" id="sayfa-profil">
       <div class="sayfa-ust">
-        <div>
-          <h2><i class="fa-solid fa-user"></i> Profilim</h2>
-          <p>Hesap bilgilerini görüntüle ve düzenle</p>
-        </div>
+        <div><h2><i class="fa-solid fa-user"></i> Profilim</h2><p>Hesap bilgilerini görüntüle ve düzenle</p></div>
         <button class="sayfa-btn" id="profilDuzenleBtn"><i class="fa-solid fa-user-pen"></i> Düzenle</button>
       </div>
 
       <div class="profil-buyuk">
-        <div class="profil-banner" id="profilBanner">
-          <div class="profil-banner-overlay"></div>
-        </div>
+        <div class="profil-banner" id="profilBanner"><div class="profil-banner-overlay"></div></div>
         <div class="profil-govde">
           <div class="profil-avatar-buyuk" id="profilAvatar">D</div>
           <div class="profil-isim-satir">
             <h3 id="profilIsim">kullanıcı</h3>
             <span class="rozet" id="profilRozet" data-rol="member">MEMBER</span>
+            <span class="rozet-rank" id="profilRank">Çaylak</span>
           </div>
           <p class="profil-mail" id="profilMail">ornek@mail.com</p>
           <div class="profil-bio" id="profilBio">Henüz bio eklenmemiş.</div>
 
           <div class="profil-stats">
-            <div class="profil-stat">
-              <b id="profilLevel">1</b>
-              <span>SEVİYE</span>
-            </div>
-            <div class="profil-stat">
-              <b id="profilXp">0</b>
-              <span>XP</span>
-            </div>
-            <div class="profil-stat">
-              <b id="profilTarih">—</b>
-              <span>KAYIT</span>
-            </div>
+            <div class="profil-stat"><b id="profilLevel">1</b><span>SEVİYE</span></div>
+            <div class="profil-stat"><b id="profilXp">0</b><span>XP</span></div>
+            <div class="profil-stat"><b id="profilTarih">—</b><span>KAYIT</span></div>
           </div>
         </div>
+      </div>
+
+      <div class="kisisel-ist">
+        <div class="ki-baslik"><i class="fa-solid fa-chart-line"></i> Kişisel İstatistikler</div>
+        <div class="ki-grid">
+          <div class="ki-kart"><div class="ki-baslik-k">Toplam Sorgu</div><div class="ki-deger" data-sayi id="kiToplam">0</div></div>
+          <div class="ki-kart"><div class="ki-baslik-k">En Çok Kullanılan</div><div class="ki-deger" id="kiEnCok">—</div></div>
+          <div class="ki-kart"><div class="ki-baslik-k">Bugünkü Sorgu</div><div class="ki-deger" data-sayi id="kiBugun">0</div></div>
+          <div class="ki-kart"><div class="ki-baslik-k">Kazanılan Rozet</div><div class="ki-deger" data-sayi id="kiRozet">0</div></div>
+        </div>
+      </div>
+
+      <div class="panel-kart">
+        <div class="panel-ust"><div class="panel-baslik"><i class="fa-solid fa-clock-rotate-left"></i> Son Sorgularım</div></div>
+        <ul class="feed" id="profilGecmis"></ul>
       </div>
     </section>
 
-    <!-- ADMIN -->
     <section class="sayfa" id="sayfa-admin">
       <div class="sayfa-ust">
-        <div>
-          <h2><i class="fa-solid fa-shield-halved"></i> Yönetim Paneli</h2>
-          <p>Kullanıcı yönetimi ve duyuru kontrolü</p>
-        </div>
+        <div><h2><i class="fa-solid fa-shield-halved"></i> Yönetim Paneli</h2><p>Kullanıcı yönetimi ve duyuru kontrolü</p></div>
       </div>
-
       <div class="ist-satir">
-        <div class="ist-kart">
-          <div class="ist-ikon"><i class="fa-solid fa-users"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">TOPLAM ÜYE</div>
-            <div class="ist-deger" id="apUye">0</div>
-          </div>
-        </div>
-        <div class="ist-kart">
-          <div class="ist-ikon"><i class="fa-solid fa-crown"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">VIP ÜYE</div>
-            <div class="ist-deger" id="apVip">0</div>
-          </div>
-        </div>
-        <div class="ist-kart">
-          <div class="ist-ikon"><i class="fa-solid fa-bolt"></i></div>
-          <div class="ist-bilgi">
-            <div class="ist-baslik">TOPLAM SORGU</div>
-            <div class="ist-deger" id="apSorgu">0</div>
-          </div>
-        </div>
+        <div class="ist-kart"><div class="ist-ikon"><i class="fa-solid fa-users"></i></div><div class="ist-bilgi"><div class="ist-baslik">TOPLAM ÜYE</div><div class="ist-deger" data-sayi id="apUye">0</div></div></div>
+        <div class="ist-kart"><div class="ist-ikon"><i class="fa-solid fa-crown"></i></div><div class="ist-bilgi"><div class="ist-baslik">VIP ÜYE</div><div class="ist-deger" data-sayi id="apVip">0</div></div></div>
+        <div class="ist-kart"><div class="ist-ikon"><i class="fa-solid fa-bolt"></i></div><div class="ist-bilgi"><div class="ist-baslik">TOPLAM SORGU</div><div class="ist-deger" data-sayi id="apSorgu">0</div></div></div>
       </div>
 
       <div class="admin-kart">
         <div class="admin-baslik"><i class="fa-solid fa-crown"></i> VIP Yönetimi</div>
         <div class="admin-form">
           <input type="text" id="vipNick" placeholder="Kullanıcı adı">
-          <select id="vipSure">
-            <option value="1">1 Gün</option>
-            <option value="7" selected>7 Gün</option>
-            <option value="30">30 Gün</option>
-          </select>
+          <select id="vipSure"><option value="1">1 Gün</option><option value="7" selected>7 Gün</option><option value="30">30 Gün</option></select>
           <button id="vipVerBtn"><i class="fa-solid fa-check"></i> VIP VER</button>
         </div>
         <div class="admin-mesaj" id="vipMesaj"></div>
@@ -421,15 +303,11 @@
       </div>
 
       <div class="admin-kart">
-        <div class="admin-baslik">
-          <i class="fa-solid fa-users"></i> Kullanıcılar
-          <input type="text" id="adminArama" placeholder="Ara..." style="margin-left:auto;">
-        </div>
+        <div class="admin-baslik"><i class="fa-solid fa-users"></i> Kullanıcılar <input type="text" id="adminArama" placeholder="Ara..." style="margin-left:auto;"></div>
         <ul class="admin-liste" id="adminListe"></ul>
       </div>
     </section>
 
-    <!-- ARAÇ SAYFASI -->
     <section class="sayfa" id="sayfa-arac">
       <button class="arac-geri" id="aracGeri"><i class="fa-solid fa-arrow-left"></i> Geri</button>
 
@@ -439,23 +317,69 @@
           <h2 id="aracBaslik">Araç</h2>
           <p id="aracAciklama">Açıklama</p>
         </div>
+        <button class="fav-btn" id="favBtn" title="Favorilere ekle"><i class="fa-regular fa-star"></i></button>
       </div>
 
       <div class="arac-form-kart">
         <div class="arac-form-baslik"><i class="fa-solid fa-keyboard"></i> SORGU BİLGİLERİ</div>
         <div class="arac-girdiler" id="aracGirdiler"></div>
-        <button class="arac-calistir" id="aracCalistir">
-          <i class="fa-solid fa-play"></i> ÇALIŞTIR
-        </button>
+        <button class="arac-calistir" id="aracCalistir"><i class="fa-solid fa-play"></i> ÇALIŞTIR</button>
       </div>
 
       <div class="arac-sonuc-kart" id="aracSonucKart" style="display:none;">
-        <div class="arac-form-baslik"><i class="fa-solid fa-circle-check"></i> SONUÇ</div>
+        <div class="arac-form-baslik">
+          <i class="fa-solid fa-circle-check"></i> SONUÇ
+          <div class="sonuc-aksiyon">
+            <button id="sonucKopyala" title="Kopyala"><i class="fa-solid fa-copy"></i></button>
+            <button id="sonucIndir" title="JSON indir"><i class="fa-solid fa-download"></i></button>
+          </div>
+        </div>
         <div class="arac-sonuc" id="aracSonuc"></div>
       </div>
     </section>
 
   </main>
+
+  <button class="yukari" id="yukari" title="Yukarı çık"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <!-- MOBİL ALT NAV -->
+  <nav class="mobil-nav">
+    <button class="mn-item aktif" data-sayfa="anasayfa"><i class="fa-solid fa-house"></i><span>Ana</span></button>
+    <button class="mn-item" data-sayfa="araclar"><i class="fa-solid fa-toolbox"></i><span>Araçlar</span></button>
+    <button class="mn-item" data-sayfa="aktivite"><i class="fa-solid fa-bolt"></i><span>Aktivite</span></button>
+    <button class="mn-item" data-sayfa="profil"><i class="fa-solid fa-user"></i><span>Profil</span></button>
+  </nav>
+</div>
+
+<!-- ARAMA MODAL -->
+<div class="modal-arka" id="aramaArka"></div>
+<div class="arama-modal" id="aramaModal">
+  <div class="arama-ust">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="aramaInput" placeholder="Araç, kategori ara..." autocomplete="off">
+    <kbd>ESC</kbd>
+  </div>
+  <div class="arama-sonuc" id="aramaSonuc"></div>
+</div>
+
+<!-- GÜNLÜK ÖDÜL MODAL -->
+<div class="modal-arka" id="gunlukArka"></div>
+<div class="modal" id="gunlukModal">
+  <div class="modal-ust">
+    <div class="modal-baslik"><i class="fa-solid fa-gift"></i> Günlük Ödül</div>
+    <button class="modal-kapat" id="gunlukKapat"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="gunluk-icerik" id="gunlukIcerik"></div>
+</div>
+
+<!-- BAŞARIM MODAL -->
+<div class="modal-arka" id="basariArka"></div>
+<div class="modal" id="basariModal">
+  <div class="modal-ust">
+    <div class="modal-baslik"><i class="fa-solid fa-medal"></i> Başarımlar</div>
+    <button class="modal-kapat" id="basariKapat"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="basari-grid" id="basariGridModal"></div>
 </div>
 
 <!-- PROFİL DÜZENLE MODAL -->
@@ -465,40 +389,11 @@
     <div class="modal-baslik"><i class="fa-solid fa-user-pen"></i> Profil Düzenle</div>
     <button class="modal-kapat" id="modalKapat"><i class="fa-solid fa-xmark"></i></button>
   </div>
-
-  <div class="modal-alan">
-    <label>PROFİL FOTOĞRAFI</label>
-    <div class="modal-foto-satir">
-      <div class="modal-avatar" id="modalAvatar">D</div>
-      <label class="modal-btn"><i class="fa-solid fa-image"></i> Seç<input type="file" id="fotoInput" accept="image/*" hidden></label>
-    </div>
-  </div>
-
-  <div class="modal-alan">
-    <label>BANNER</label>
-    <div class="modal-foto-satir">
-      <div class="modal-banner" id="modalBanner"></div>
-      <label class="modal-btn"><i class="fa-solid fa-image"></i> Seç<input type="file" id="bannerInput" accept="image/*" hidden></label>
-    </div>
-  </div>
-
-  <div class="modal-alan">
-    <label>KULLANICI ADI</label>
-    <input type="text" id="modalIsim" placeholder="Yeni isim">
-  </div>
-
-  <div class="modal-alan">
-    <label>BIO</label>
-    <textarea id="modalBio" placeholder="Kendinden bahset..."></textarea>
-  </div>
-
-  <div class="modal-alan">
-    <label>E-POSTA DEĞİŞTİR</label>
-    <input type="email" id="modalMail" placeholder="Yeni e-posta">
-    <input type="password" id="modalSifre" placeholder="Onay için şifren" style="margin-top:.5rem;">
-    <small>E-posta değiştirmek için şifreni girmen gerekir.</small>
-  </div>
-
+  <div class="modal-alan"><label>PROFİL FOTOĞRAFI</label><div class="modal-foto-satir"><div class="modal-avatar" id="modalAvatar">D</div><label class="modal-btn"><i class="fa-solid fa-image"></i> Seç<input type="file" id="fotoInput" accept="image/*" hidden></label></div></div>
+  <div class="modal-alan"><label>BANNER</label><div class="modal-foto-satir"><div class="modal-banner" id="modalBanner"></div><label class="modal-btn"><i class="fa-solid fa-image"></i> Seç<input type="file" id="bannerInput" accept="image/*" hidden></label></div></div>
+  <div class="modal-alan"><label>KULLANICI ADI</label><input type="text" id="modalIsim" placeholder="Yeni isim"></div>
+  <div class="modal-alan"><label>BIO</label><textarea id="modalBio" placeholder="Kendinden bahset..."></textarea></div>
+  <div class="modal-alan"><label>E-POSTA DEĞİŞTİR</label><input type="email" id="modalMail" placeholder="Yeni e-posta"><input type="password" id="modalSifre" placeholder="Onay için şifren" style="margin-top:.5rem;"><small>E-posta değiştirmek için şifreni girmen gerekir.</small></div>
   <button class="modal-kaydet" id="modalKaydet"><i class="fa-solid fa-check"></i> KAYDET</button>
   <div class="modal-mesaj" id="modalMesaj"></div>
 </div>
@@ -513,10 +408,7 @@
     <div class="pm-isim"><span id="pmIsim">kullanıcı</span><span class="rozet" id="pmRozet" data-rol="member">MEMBER</span></div>
     <div class="pm-mail" id="pmMail">ornek@mail.com</div>
     <div class="pm-bio" id="pmBio">Bio yok.</div>
-    <div class="pm-stats">
-      <div class="pm-stat"><b id="pmLevel">1</b><span>SEVİYE</span></div>
-      <div class="pm-stat"><b id="pmXp">0</b><span>XP</span></div>
-    </div>
+    <div class="pm-stats"><div class="pm-stat"><b id="pmLevel">1</b><span>SEVİYE</span></div><div class="pm-stat"><b id="pmXp">0</b><span>XP</span></div></div>
   </div>
 </div>
 
